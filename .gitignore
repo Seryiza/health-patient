@@ -1,3 +1,7 @@
+# Environment settings
+.env
+
+# Builds
 /target
 
 # Editor tooling

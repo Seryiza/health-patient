@@ -1,0 +1,9 @@
+version: "3"
+services:
+  db:
+    image: "postgres:14"
+    ports:
+      - $DATABASE_PORT:5432
+    environment:
+      POSTGRES_DB: health_patient
+      POSTGRES_PASSWORD: $DATABASE_PASSWORD
