@@ -1,4 +1,4 @@
-(ns health-patient.patients
+(ns health-patient.patients.db
   (:require [hugsql.core :as hugsql]
             [clojure.java.io :as io]))
 
