@@ -4,6 +4,8 @@
 # Builds
 /target
 
-# Editor tooling
+# Tools
 /.clj-kondo
 /.lsp
+/.lein-repl-history
+/.nrepl-port
