@@ -1,0 +1,5 @@
+/target
+
+# Editor tooling
+/.clj-kondo
+/.lsp
