@@ -2,4 +2,5 @@
   (:require [mount.core :refer [defstate]]))
 
 (defstate config
-  :start {:database-url (System/getenv "DATABASE_URL")})
+  :start {:http-port (Integer/parseInt (System/getenv "HTTP_PORT"))
+          :database-url (System/getenv "DATABASE_URL")})
