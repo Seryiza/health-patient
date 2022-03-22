@@ -4,9 +4,11 @@
 
   :dependencies [[org.clojure/clojure "1.10.3"]
                  [org.postgresql/postgresql "42.3.1"]
+                 [com.github.seancorfield/next.jdbc "1.2.772"]
                  [migratus "1.3.6"]
                  [com.layerware/hugsql "0.5.1"]
-                 [hikari-cp "2.13.0"]
+                 [com.layerware/hugsql-adapter-next-jdbc "0.5.1"]
+                 [com.zaxxer/HikariCP "5.0.1"]
                  [mount "0.1.16"]
                  [ring/ring-core "1.9.5"]
                  [ring/ring-jetty-adapter "1.9.5"]

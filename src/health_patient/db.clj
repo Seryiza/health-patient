@@ -1,27 +1,14 @@
 (ns health-patient.db
   (:require [mount.core :refer [defstate]]
-            [hikari-cp.core :as cp]
-            [health-patient.config :refer [config]]
-            [clojure.string :as str]))
-
-(defn url->opts [database-url]
-  (let [uri       (java.net.URI. database-url)
-        path      (.getPath uri)
-        host      (.getHost uri)
-        port      (.getPort uri)
-        user-info (.getUserInfo uri)
-        [_ db] (re-find #"\/(.+)" path)
-        [username password] (str/split user-info #"\:")]
-    {:adapter "postgresql"
-     :server-name host
-     :port-number port
-     :database-name db
-     :username username
-     :password password}))
+            [next.jdbc.connection :as jdbc-conn]
+            [hugsql.core :as hugsql]
+            [hugsql.adapter.next-jdbc :as hugsql-adapter]
+            [health-patient.config :refer [config]])
+  (:import com.zaxxer.hikari.HikariDataSource))
 
 (defstate db
-  :start (let [database-url (:database-url config)
-               pool-opts (url->opts database-url)
-               datasource (cp/make-datasource pool-opts)]
-           {:datasource datasource})
-  :stop (-> db :datasource cp/close-datasource))
+  :start (do
+           (hugsql/set-adapter! (hugsql-adapter/hugsql-adapter-next-jdbc))
+           (jdbc-conn/->pool HikariDataSource {:jdbcUrl (:database-jdbc-url config)
+                                               :maximumPoolSize 15}))
+  :stop (.close db))
