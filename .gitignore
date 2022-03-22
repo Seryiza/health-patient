@@ -8,4 +8,5 @@
 /.clj-kondo
 /.lsp
 /.lein-repl-history
+/.lein-failures
 /.nrepl-port
