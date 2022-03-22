@@ -3,4 +3,4 @@
 
 (defstate config
   :start {:http-port (Integer/parseInt (System/getenv "HTTP_PORT"))
-          :database-url (System/getenv "DATABASE_URL")})
+          :database-jdbc-url (System/getenv "DATABASE_JDBC_URL")})
