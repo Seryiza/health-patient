@@ -13,7 +13,9 @@
                  [ring/ring-core "1.9.5"]
                  [ring/ring-jetty-adapter "1.9.5"]
                  [metosin/reitit "0.5.17"]
-                 [selmer "1.12.50"]]
+                 [selmer "1.12.50"]
+                 [kerodon "0.9.1"]
+                 [re-rand "0.1.0"]]
   :plugins [[migratus-lein "0.7.3"]]
   :min-lein-version "2.0.0"
 
