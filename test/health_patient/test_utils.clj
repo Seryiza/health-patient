@@ -4,6 +4,7 @@
             [net.cgrand.enlive-html :as enlive]
             [mount.core :as mount]
             [clojure.test :as test]
+            [clojure.string :as str]
             [health-patient.app :refer [app]]
             [health-patient.config :refer [config]]
             [health-patient.db :refer [db]])
@@ -39,7 +40,7 @@
 
 (defn html-has-text? [html selector checking-text]
   (let [node-texts (map enlive/text (enlive/select html selector))]
-    (test/is (some #(= checking-text %) node-texts)
+    (test/is (some #(str/includes? % checking-text) node-texts)
              (str "Text " checking-text " not found"))))
 
 (defn http-status? [response status]
