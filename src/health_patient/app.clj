@@ -9,7 +9,8 @@
 
 (def app-routes
   [["/patients" ["" {:get patients/show-all-patients}]
-                ["/:id" {:get patients/show-patient}]]])
+                ["/:id" {:get patients/show-patient
+                         :delete patients/delete-patient}]]])
 
 (defstate app
   :start (reit/ring-handler

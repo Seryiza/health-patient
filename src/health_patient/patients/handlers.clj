@@ -14,3 +14,10 @@
     (if (nil? patient)
       (response/not-found "Patient not found.")
       (html/render request "patients/show.html" {:patient patient}))))
+
+(defn delete-patient [request]
+  (let [patient-id (-> request :path-params :id)
+        affected-patients (patients/delete-patient-by-id db {:id patient-id})]
+    (if (zero? affected-patients)
+      (response/not-found "Patient not found.")
+      (response/response "Patient deleted."))))

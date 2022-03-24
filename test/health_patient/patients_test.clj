@@ -45,3 +45,18 @@
   (testing "Don't show non-existing user"
     (let [response (app (mock/request :get "/patients/2"))]
       (test-utils/http-status? response 404))))
+
+(deftest test-delete-patient
+  (test-utils/insert-test-records :patients
+                                    generate-patient
+                                    [{:id 1
+                                      :first_name "Sergey"}])
+  (testing "Delete existing user and try delete again"
+    (let [response (app (mock/request :delete "/patients/1"))]
+      (test-utils/http-status? response 200))
+    (let [response (app (mock/request :delete "/patients/1"))]
+      (test-utils/http-status? response 404)))
+
+  (testing "Delete non-existing user"
+    (let [response (app (mock/request :delete "/patients/2"))]
+      (test-utils/http-status? response 404))))
