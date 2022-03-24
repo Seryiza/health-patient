@@ -1,6 +1,6 @@
 (ns health-patient.patients-test
   (:require [re-rand :refer [re-rand]]
-            [clojure.test :refer [deftest is]]
+            [clojure.test :refer [deftest testing]]
             [ring.mock.request :as mock]
             [health-patient.app :refer [app]]
             [health-patient.test-utils :as test-utils])
@@ -29,3 +29,19 @@
     (test-utils/http-status? response 200)
     (test-utils/html-has-text? html [:p] "Sergey")
     (test-utils/html-has-text? html [:p] "Uniqueman")))
+
+(deftest test-show-patient
+  (testing "Show existing user"
+    (test-utils/insert-test-records :patients
+                                    generate-patient
+                                    [{:id 1
+                                      :first_name "Sergey"
+                                      :last_name "Zaborovsky"}])
+    (let [response (app (mock/request :get "/patients/1"))
+          html (test-utils/parse-html response)]
+      (test-utils/http-status? response 200)
+      (test-utils/html-has-text? html [:p] "Sergey Zaborovsky")))
+
+  (testing "Don't show non-existing user"
+    (let [response (app (mock/request :get "/patients/2"))]
+      (test-utils/http-status? response 404))))
