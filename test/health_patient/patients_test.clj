@@ -20,15 +20,16 @@
    :cmi_number (re-rand #"[0-9]{16}")})
 
 (deftest test-list-patients
-  (test-utils/insert-test-records :patients
-                                  generate-patient
-                                  [{:first_name "Sergey"}
-                                   {:first_name "Uniqueman"}])
-  (let [response (app (mock/request :get "/patients"))
-        html (test-utils/parse-html response)]
-    (test-utils/http-status? response 200)
-    (test-utils/html-has-text? html [:p] "Sergey")
-    (test-utils/html-has-text? html [:p] "Uniqueman")))
+  (testing "List all patients"
+    (test-utils/insert-test-records :patients
+                                    generate-patient
+                                    [{:first_name "Sergey"}
+                                     {:first_name "Uniqueman"}])
+    (let [response (app (mock/request :get "/patients"))
+          html (test-utils/parse-html response)]
+      (test-utils/http-status? response 200)
+      (test-utils/html-has-text? html [:p] "Sergey")
+      (test-utils/html-has-text? html [:p] "Uniqueman"))))
 
 (deftest test-show-patient
   (testing "Show existing user"
@@ -47,11 +48,11 @@
       (test-utils/http-status? response 404))))
 
 (deftest test-delete-patient
-  (test-utils/insert-test-records :patients
+  (testing "Delete existing user and try delete again"
+    (test-utils/insert-test-records :patients
                                     generate-patient
                                     [{:id 1
                                       :first_name "Sergey"}])
-  (testing "Delete existing user and try delete again"
     (let [response (app (mock/request :delete "/patients/1"))]
       (test-utils/http-status? response 200))
     (let [response (app (mock/request :delete "/patients/1"))]
