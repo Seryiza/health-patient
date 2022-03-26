@@ -61,3 +61,18 @@
   (testing "Delete non-existing user"
     (let [response (app (mock/request :delete "/patients/2"))]
       (test-utils/http-status? response 404))))
+
+(deftest test-update-patient
+  (testing "Update exisiting user"
+    (test-utils/insert-test-records :patients
+                                    generate-patient
+                                    [{:id 1, :first_name "Not-Sergey"}])
+    (let [response (-> (mock/request :put "/patients/1")
+                       (mock/json-body (test-utils/make-test-record generate-patient {:first_name "Updated-Sergey"
+                                                                                      :birth_date "2000-01-01"}))
+                       app)]
+      (test-utils/http-status? response 200))
+    (let [response (app (mock/request :get "/patients/1"))
+          html (test-utils/parse-html response)]
+      (test-utils/http-status? response 200)
+      (test-utils/html-has-text? html [:p] "Updated-Sergey"))))

@@ -14,3 +14,15 @@ WHERE id = :id AND is_deleted = false;
 UPDATE patients
 SET is_deleted = true
 WHERE id = :id AND is_deleted = false;
+
+-- :name update-patient-by-id :! :n
+-- :doc Update one patient by id
+UPDATE patients
+SET first_name = :first_name,
+    last_name = :last_name,
+    middle_name = :middle_name,
+    sex = :sex,
+    birth_date = :birth_date,
+    address = :address,
+    cmi_number = :cmi_number
+WHERE id = :id AND is_deleted = false;

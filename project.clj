@@ -13,6 +13,8 @@
                  [ring/ring-core "1.9.5"]
                  [ring/ring-jetty-adapter "1.9.5"]
                  [ring/ring-mock "0.4.0"]
+                 [ring/ring-json "0.5.1"]
+                 [funcool/struct "1.4.0"]
                  [enlive "1.1.6"]
                  [metosin/reitit "0.5.17"]
                  [selmer "1.12.50"]

@@ -5,11 +5,13 @@
             [ring.middleware.keyword-params :refer [wrap-keyword-params]]
             [ring.middleware.session :refer [wrap-session]]
             [ring.middleware.flash :refer [wrap-flash]]
+            [ring.middleware.json :refer [wrap-json-response wrap-json-params]]
             [health-patient.patients.handlers :as patients]))
 
 (def app-routes
   [["/patients" ["" {:get patients/show-all-patients}]
                 ["/:id" {:get patients/show-patient
+                         :put patients/update-patient
                          :delete patients/delete-patient}]]])
 
 (defstate app
@@ -19,6 +21,8 @@
                         (reit/redirect-trailing-slash-handler)
                         (reit/create-default-handler))
            {:middleware [wrap-params
+                         wrap-json-params
                          wrap-keyword-params
                          wrap-session
-                         wrap-flash]}))
+                         wrap-flash
+                         wrap-json-response]}))
