@@ -14,8 +14,7 @@
    :last_name (re-rand #"[A-Z][a-z]{1,20}")
    :middle_name (re-rand #"[A-Z][a-z]{1,20}")
    :sex (rand-nth ["male" "female" "not-known" "not-applicable"])
-   #_("TODO: make random date")
-   :birth_date (LocalDate/of 2000 10 20)
+   :birth_date (re-rand #"19[0-9]{2}-0[1-9]-0[1-9]")
    :address (re-rand #"[A-Za-z0-9\ ]{1,40}")
    :cmi_number (re-rand #"[0-9]{16}")})
 
@@ -68,8 +67,7 @@
                                     generate-patient
                                     [{:id 1, :first_name "Not-Sergey"}])
     (let [response (-> (mock/request :put "/patients/1")
-                       (mock/json-body (test-utils/make-test-record generate-patient {:first_name "Updated-Sergey"
-                                                                                      :birth_date "2000-01-01"}))
+                       (mock/json-body (test-utils/make-test-record generate-patient {:first_name "Updated-Sergey"}))
                        app)]
       (test-utils/http-status? response 200))
     (let [response (app (mock/request :get "/patients/1"))
