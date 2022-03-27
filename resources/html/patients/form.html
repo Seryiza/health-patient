@@ -1,0 +1,82 @@
+{% extends "base.html" %}
+
+{% block content %}
+<form
+    {% if patient-exist? %}
+    data-save-patient-form
+    data-patient-id="{{ patient.id }}"
+    {% else %}
+    data-create-patient-form
+    {% endif %}>
+
+    <div class="errors"></div>
+
+    <label>
+        First name:
+        <input
+            type="text"
+            name="first_name"
+            value="{{ patient.first_name }}">
+    </label>
+    <label>
+        Last name:
+        <input
+            type="text"
+            name="last_name"
+            value="{{ patient.last_name }}">
+    </label>
+    <label>
+        Middle name:
+        <input
+            type="text"
+            name="middle_name"
+            value="{{ patient.middle_name }}">
+    </label>
+    <label>
+        Sex:
+        <select name="sex">
+            <option
+                value="not-known"
+                {% if patient.sex = "not-known" %}selected{% endif %}>Not known</option>
+            <option
+                value="male"
+                {% if patient.sex = "male" %}selected{% endif %}>Male</option>
+            <option
+                value="female"
+                {% if patient.sex = "female" %}selected{% endif %}>Female</option>
+            <option
+                value="not-applicable"
+                {% if patient.sex = "not-applicable" %}selected{% endif %}>Not applicable</option>
+        </select>
+    </label>
+    <label>
+        Birth date:
+        <input
+            type="date"
+            name="birth_date"
+            value="{{ patient.birth_date }}">
+    </label>
+    <label>
+        Address:
+        <input
+            type="text"
+            name="address"
+            value="{{ patient.address }}">
+    </label>
+    <label>
+        CMI Number:
+        <input
+            type="number"
+            name="cmi_number"
+            value="{{ patient.cmi_number }}">
+    </label>
+
+    <button type="submit">
+        {% if patient-exist? %}
+        Save
+        {% else %}
+        Create
+        {% endif %}
+    </button>
+</form>
+{% endblock %}

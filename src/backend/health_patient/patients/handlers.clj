@@ -25,6 +25,17 @@
       (response/not-found "Patient not found.")
       (html/render request "patients/show.html" {:patient patient}))))
 
+(defn show-create-form [request]
+  (html/render request "patients/form.html"))
+
+(defn show-edit-form [request]
+  (let [patient-id (-> request :path-params :id)
+        patient (patients/patient-by-id db {:id patient-id})]
+    (if (nil? patient)
+      (response/not-found "Patient not found.")
+      (html/render request "patients/form.html" {:patient-exist? true
+                                                 :patient patient}))))
+
 (defn delete-patient [request]
   (let [patient-id (-> request :path-params :id)
         affected-patients (patients/delete-patient-by-id db {:id patient-id})]
