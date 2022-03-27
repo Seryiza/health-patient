@@ -9,7 +9,8 @@
             [health-patient.patients.handlers :as patients]))
 
 (def app-routes
-  [["/patients" ["" {:get patients/show-all-patients}]
+  [["/patients" ["" {:get patients/show-all-patients
+                     :post patients/create-patient}]
                 ["/:id" {:get patients/show-patient
                          :put patients/update-patient
                          :delete patients/delete-patient}]]])

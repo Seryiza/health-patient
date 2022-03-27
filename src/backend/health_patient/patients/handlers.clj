@@ -42,3 +42,12 @@
         (patients/update-patient-by-id db patient-data-with-id)
         (response/response nil))
       (response/bad-request {:form-errors form-errors}))))
+
+(defn create-patient [request]
+  (let [form-data (-> request :params)
+        [form-errors patient-data] (st/validate form-data +patient-scheme+)]
+    (if (empty? form-errors)
+      (do
+        (patients/insert-patient db patient-data)
+        (response/created nil))
+      (response/bad-request {:form-errors form-errors}))))

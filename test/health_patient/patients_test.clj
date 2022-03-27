@@ -73,3 +73,10 @@
           html (test-utils/parse-html response)]
       (test-utils/http-status? response 200)
       (test-utils/html-has-text? html [:p] "Updated-Sergey"))))
+
+(deftest test-insert-patient
+  (testing "Insert new user"
+    (let [response (-> (mock/request :post "/patients")
+                       (mock/json-body (generate-patient))
+                       app)]
+      (test-utils/http-status? response 201))))
