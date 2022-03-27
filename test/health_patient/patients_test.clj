@@ -15,7 +15,7 @@
    :sex (rand-nth ["male" "female" "not-known" "not-applicable"])
    :birth_date (re-rand #"19[0-9]{2}-0[1-9]-0[1-9]")
    :address (re-rand #"[A-Za-z0-9\ ]{1,40}")
-   :cmi_number (re-rand #"[0-9]{16}")})
+   :cmi_number (re-rand #"[1-9]{16}")})
 
 (deftest test-list-patients
   (testing "List all patients"
