@@ -3,5 +3,8 @@
 {% block content %}
     {% for patient in patients %}
         <p>{{ patient.first_name }}</p>
+        <button
+            data-delete-patient-button
+            data-patient-id="{{ patient.id }}">Delete</button>
     {% endfor %}
 {% endblock %}

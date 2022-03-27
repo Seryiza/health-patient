@@ -3,6 +3,7 @@
 
 # Builds
 /target
+/resources/public/js
 
 # Tools
 /.clj-kondo

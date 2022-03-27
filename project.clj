@@ -3,6 +3,7 @@
   :url "https://github.com/Seryiza/health-patient"
 
   :dependencies [[org.clojure/clojure "1.10.3"]
+                 [org.clojure/clojurescript "1.11.4"]
                  [org.postgresql/postgresql "42.3.1"]
                  [com.github.seancorfield/next.jdbc "1.2.772"]
                  [migratus "1.3.6"]
@@ -18,14 +19,22 @@
                  [enlive "1.1.6"]
                  [metosin/reitit "0.5.17"]
                  [selmer "1.12.50"]
-                 [re-rand "0.1.0"]]
-  :plugins [[migratus-lein "0.7.3"]]
+                 [re-rand "0.1.0"]
+                 [prismatic/dommy "1.1.0"]
+                 [cljs-ajax "0.8.4"]]
+  :plugins [[migratus-lein "0.7.3"]
+            [lein-cljsbuild "1.1.8"]]
   :min-lein-version "2.0.0"
 
   :resource-paths ["resources"]
-  :source-paths ["src"]
+  :source-paths ["src/backend"]
   :profiles {:dev {:source-paths ["dev"]
                    :dependencies [[org.clojure/tools.namespace "1.2.0"]]}}
+
+  :cljsbuild {:builds [{:source-paths ["src/frontend"]
+                         :compiler {:output-to "resources/public/js/app.js"
+                                    :optimizations :whitespace
+                                    :pretty-print true}}]}
 
   :migratus {:store :database
              :migration-dir "migrations"
