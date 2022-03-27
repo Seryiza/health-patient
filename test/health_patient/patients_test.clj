@@ -3,8 +3,7 @@
             [clojure.test :refer [deftest testing]]
             [ring.mock.request :as mock]
             [health-patient.app :refer [app]]
-            [health-patient.test-utils :as test-utils])
-  (:import [java.time LocalDate]))
+            [health-patient.test-utils :as test-utils]))
 
 (test-utils/use-mount-app-fixture)
 (test-utils/use-transactable-tests-fixture)
