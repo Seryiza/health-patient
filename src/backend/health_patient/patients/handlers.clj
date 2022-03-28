@@ -58,7 +58,8 @@
   (let [form-data (-> request :params)
         [form-errors patient-data] (st/validate form-data +patient-scheme+)]
     (if (empty? form-errors)
-      (do
-        (patients/insert-patient db patient-data)
-        (response/created nil))
+      (let [inserted-data (patients/insert-patient db patient-data)
+            patiend-id (:id inserted-data)
+            patient-url (str "/patients/" patiend-id)]
+        (response/created patient-url {:id patiend-id}))
       (response/bad-request {:form-errors form-errors}))))

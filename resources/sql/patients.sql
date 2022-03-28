@@ -27,7 +27,7 @@ SET first_name = :first_name,
     cmi_number = :cmi_number
 WHERE id = :id AND is_deleted = false;
 
--- :name insert-patient :! :n
--- :doc Insert new patient
+-- :name insert-patient :insert :one
+-- :doc Insert new patient. Return ID of inserted patient
 INSERT INTO patients (first_name, last_name, middle_name, sex, birth_date, address, cmi_number)
 VALUES (:first_name, :last_name, :middle_name, :sex, :birth_date, :address, :cmi_number)
