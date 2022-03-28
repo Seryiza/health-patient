@@ -1,15 +1,12 @@
 (ns health-patient.patients.list-page
   (:require [dommy.core :as dommy]
-            [ajax.core :as ajax]))
-
-(defn error-handler [{:keys [status status-text]}]
-  (.log js/console (str "Error happened: " status " " status-text))
-  (js/alert "Ooops, error happend. Try again later or ask support team."))
+            [ajax.core :as ajax]
+            [health-patient.utils :as utils]))
 
 (defn delete-patient! [patient-id]
   (ajax/DELETE (str "/patients/" patient-id)
                {:handler #(.log js/console %)
-                :error-handler error-handler}))
+                :error-handler utils/common-error-handler}))
 
 (defn init []
   (doseq [delete-patient-button (dommy/sel "[data-delete-patient-button]")]

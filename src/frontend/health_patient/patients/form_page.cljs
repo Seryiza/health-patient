@@ -1,8 +1,9 @@
 (ns health-patient.patients.form-page
   (:require [dommy.core :as dommy]
-            [ajax.core :as ajax]))
+            [ajax.core :as ajax]
+            [health-patient.utils :as utils]))
 
-(def form-input-names
+(def patient-input-names
   [:first_name
    :last_name
    :middle_name
@@ -11,44 +12,29 @@
    :address
    :cmi_number])
 
-(defn form-listen! [form handler]
-  (dommy/listen! form :submit (fn [event]
-                                (.preventDefault event)
-                                (handler event))))
-
-(defn redirect [url]
-  (.assign js/location url))
+(defn get-form-patient-id [form]
+  (dommy/attr form :data-patient-id))
 
 (defn save-patient! [patient-id patient-data]
   (ajax/PUT (str "/patients/" patient-id)
             {:params patient-data
-             :handler #(redirect (str "/patients/" patient-id))
+             :handler #(utils/redirect (str "/patients/" patient-id))
+             :error-handler utils/common-error-handler
              :format :json
              :keywords? true}))
 
 (defn create-patient! [patient-data]
   (ajax/POST "/patients"
              {:params patient-data
-              :handler #(redirect (str "/patients/" (:id %)))
+              :handler #(utils/redirect (str "/patients/" (:id %)))
+              :error-handler utils/common-error-handler
               :format :json
               :response-format :json
               :keywords? true}))
 
-(defn get-form-patient-id [form]
-  (dommy/attr form :data-patient-id))
-
-(defn get-form-value [form input-name]
-  (let [input-sel (str "[name=" (name input-name) "]")]
-    (when-let [input (dommy/sel1 form input-sel)]
-      (dommy/value input))))
-
-(defn get-patient-data [form]
-  (->> form-input-names
-       (map #(hash-map % (get-form-value form %)))
-       (apply merge)))
-
 (defn init []
   (doseq [form (dommy/sel "[data-save-patient-form]")]
-    (form-listen! form #(save-patient! (get-form-patient-id form) (get-patient-data form))))
+    (utils/form-listen! form #(save-patient! (get-form-patient-id form)
+                                             (utils/get-form-values form patient-input-names))))
   (doseq [form (dommy/sel "[data-create-patient-form]")]
-    (form-listen! form #(create-patient! (get-patient-data form)))))
+    (utils/form-listen! form #(create-patient! (utils/get-form-values form patient-input-names)))))
