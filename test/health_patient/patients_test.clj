@@ -30,7 +30,7 @@
       (test-utils/html-has-text? html [:p] "Uniqueman"))))
 
 (deftest test-show-patient
-  (testing "Show existing user"
+  (testing "Show existing patient"
     (test-utils/insert-test-records :patients
                                     generate-patient
                                     [{:id 1
@@ -41,12 +41,12 @@
       (test-utils/http-status? response 200)
       (test-utils/html-has-text? html [:p] "Sergey Zaborovsky")))
 
-  (testing "Don't show non-existing user"
+  (testing "Don't show non-existing patient"
     (let [response (app (mock/request :get "/patients/2"))]
       (test-utils/http-status? response 404))))
 
 (deftest test-delete-patient
-  (testing "Delete existing user and try delete again"
+  (testing "Delete existing patient and try delete again"
     (test-utils/insert-test-records :patients
                                     generate-patient
                                     [{:id 1
@@ -56,12 +56,12 @@
     (let [response (app (mock/request :delete "/patients/1"))]
       (test-utils/http-status? response 404)))
 
-  (testing "Delete non-existing user"
+  (testing "Delete non-existing patient"
     (let [response (app (mock/request :delete "/patients/2"))]
       (test-utils/http-status? response 404))))
 
 (deftest test-update-patient
-  (testing "Update exisiting user"
+  (testing "Update exisiting patient"
     (test-utils/insert-test-records :patients
                                     generate-patient
                                     [{:id 1, :first_name "Not-Sergey"}])
@@ -75,7 +75,7 @@
       (test-utils/html-has-text? html [:p] "Updated-Sergey"))))
 
 (deftest test-insert-patient
-  (testing "Insert new user"
+  (testing "Insert new patient"
     (let [response (-> (mock/request :post "/patients")
                        (mock/json-body (generate-patient))
                        app)]
