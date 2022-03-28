@@ -52,5 +52,3 @@
     (form-listen! form #(save-patient! (get-form-patient-id form) (get-patient-data form))))
   (doseq [form (dommy/sel "[data-create-patient-form]")]
     (form-listen! form #(create-patient! (get-patient-data form)))))
-
-(init)

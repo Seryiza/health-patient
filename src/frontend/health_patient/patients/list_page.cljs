@@ -15,5 +15,3 @@
   (doseq [delete-patient-button (dommy/sel "[data-delete-patient-button]")]
     (let [patient-id (dommy/attr delete-patient-button :data-patient-id)]
       (dommy/listen! delete-patient-button :click #(delete-patient! patient-id)))))
-
-(init)
