@@ -6,10 +6,15 @@
             [ring.middleware.session :refer [wrap-session]]
             [ring.middleware.flash :refer [wrap-flash]]
             [ring.middleware.json :refer [wrap-json-response wrap-json-params]]
+            [health-patient.html :as html]
             [health-patient.patients.handlers :as patients]))
 
+(defn show-index-page [request]
+  (html/render request "index.html"))
+
 (def app-routes
-  [["/patients" ["" {:get patients/show-all-patients
+  [["/" {:get show-index-page}]
+   ["/patients" ["" {:get patients/show-all-patients
                      :post patients/create-patient}]
                 ["/:id" ["" {:get patients/show-patient
                              :put patients/update-patient
