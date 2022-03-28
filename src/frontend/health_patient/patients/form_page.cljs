@@ -16,15 +16,23 @@
                                 (.preventDefault event)
                                 (handler event))))
 
+(defn redirect [url]
+  (.assign js/location url))
+
 (defn save-patient! [patient-id patient-data]
   (ajax/PUT (str "/patients/" patient-id)
             {:params patient-data
-             :format (ajax/json-request-format)}))
+             :handler #(redirect (str "/patients/" patient-id))
+             :format :json
+             :keywords? true}))
 
 (defn create-patient! [patient-data]
   (ajax/POST "/patients"
              {:params patient-data
-              :format (ajax/json-request-format)}))
+              :handler #(redirect (str "/patients/" (:id %)))
+              :format :json
+              :response-format :json
+              :keywords? true}))
 
 (defn get-form-patient-id [form]
   (dommy/attr form :data-patient-id))
