@@ -15,7 +15,7 @@
         </thead>
         <tbody>
             {% for patient in patients %}
-                <tr>
+                <tr data-patient-id="{{ patient.id }}">
                     <td>{{ patient.id }}</td>
                     <td>{{ patient.cmi_number }}</td>
                     <td>{{ patient.first_name }} {{ patient.middle_name }} {{ patient.last_name }}</td>

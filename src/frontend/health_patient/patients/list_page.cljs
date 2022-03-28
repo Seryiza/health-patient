@@ -3,9 +3,14 @@
             [ajax.core :as ajax]
             [health-patient.utils :as utils]))
 
+(defn delete-patient-row! [patient-id]
+  (let [row-sel (str "tr[data-patient-id='" patient-id "']")]
+    (when-let [row (dommy/sel1 row-sel)]
+      (dommy/remove! row))))
+
 (defn delete-patient! [patient-id]
   (ajax/DELETE (str "/patients/" patient-id)
-               {:handler #(.log js/console %)
+               {:handler #(delete-patient-row! patient-id)
                 :error-handler utils/common-error-handler}))
 
 (defn init []
