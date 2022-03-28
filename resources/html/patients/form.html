@@ -1,6 +1,12 @@
 {% extends "base.html" %}
 
 {% block content %}
+{% if patient-exist? %}
+    <h2>Patient #{{ patient.id }}</h2>
+{% else %}
+    <h2>New patient</h2>
+{% endif %}
+
 <form
     {% if patient-exist? %}
     data-save-patient-form
@@ -11,51 +17,57 @@
 
     <div class="errors"></div>
 
-    <label>
-        First name:
-        <input
-            type="text"
-            name="first_name"
-            value="{{ patient.first_name }}">
-    </label>
-    <label>
-        Last name:
-        <input
-            type="text"
-            name="last_name"
-            value="{{ patient.last_name }}">
-    </label>
-    <label>
-        Middle name:
-        <input
-            type="text"
-            name="middle_name"
-            value="{{ patient.middle_name }}">
-    </label>
-    <label>
-        Sex:
-        <select name="sex">
-            <option
-                value="not-known"
-                {% if patient.sex = "not-known" %}selected{% endif %}>Not known</option>
-            <option
-                value="male"
-                {% if patient.sex = "male" %}selected{% endif %}>Male</option>
-            <option
-                value="female"
-                {% if patient.sex = "female" %}selected{% endif %}>Female</option>
-            <option
-                value="not-applicable"
-                {% if patient.sex = "not-applicable" %}selected{% endif %}>Not applicable</option>
-        </select>
-    </label>
-    <label>
-        Birth date:
-        <input
-            type="date"
-            name="birth_date"
-            value="{{ patient.birth_date }}">
-    </label>
+    <div class="grid">
+        <label>
+            First name:
+            <input
+                type="text"
+                name="first_name"
+                value="{{ patient.first_name }}">
+        </label>
+        <label>
+            Middle name:
+            <input
+                type="text"
+                name="middle_name"
+                value="{{ patient.middle_name }}">
+        </label>
+        <label>
+            Last name:
+            <input
+                type="text"
+                name="last_name"
+                value="{{ patient.last_name }}">
+        </label>
+    </div>
+
+    <div class="grid">
+        <label>
+            Sex:
+            <select name="sex">
+                <option
+                    value="not-known"
+                    {% if patient.sex = "not-known" %}selected{% endif %}>Not known</option>
+                <option
+                    value="male"
+                    {% if patient.sex = "male" %}selected{% endif %}>Male</option>
+                <option
+                    value="female"
+                    {% if patient.sex = "female" %}selected{% endif %}>Female</option>
+                <option
+                    value="not-applicable"
+                    {% if patient.sex = "not-applicable" %}selected{% endif %}>Not applicable</option>
+            </select>
+        </label>
+        <label>
+            Birth date:
+            <input
+                type="date"
+                name="birth_date"
+                value="{{ patient.birth_date }}">
+        </label>
+    </div>
+
     <label>
         Address:
         <input

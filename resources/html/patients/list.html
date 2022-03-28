@@ -1,10 +1,36 @@
 {% extends "base.html" %}
 
 {% block content %}
-    {% for patient in patients %}
-        <p>{{ patient.first_name }}</p>
-        <button
-            data-delete-patient-button
-            data-patient-id="{{ patient.id }}">Delete</button>
-    {% endfor %}
+    <h2>Patients</h2>
+    <a href="/create-patient" role="button">Create new patient</a>
+
+    <table role="grid">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>CMI number</th>
+                <th>Full name</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for patient in patients %}
+                <tr>
+                    <td>{{ patient.id }}</td>
+                    <td>{{ patient.cmi_number }}</td>
+                    <td>{{ patient.first_name }} {{ patient.middle_name }} {{ patient.last_name }}</td>
+                    <td>
+                        <a href="/patients/{{ patient.id }}"
+                           role="button">Details</a>
+                        <a href="/patients/{{ patient.id }}/edit"
+                           class="secondary"
+                           role="button">Edit</a>
+                        <button class="secondary"
+                                data-delete-patient-button
+                                data-patient-id="{{ patient.id }}">Delete</button>
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
 {% endblock %}

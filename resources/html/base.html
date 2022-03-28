@@ -6,10 +6,29 @@
 
     <title>Health Patient</title>
 
+    <link rel="stylesheet" href="https://unpkg.com/@picocss/pico@latest/css/pico.min.css">
+    <link rel="stylesheet" href="/assets/css/app.css">
+
     <script src="/assets/js/app.js" defer></script>
 </head>
 <body>
-    {% block content %}
-    {% endblock %}
+    <nav class="container">
+        <ul>
+            <li>
+                <strong><a href="/">HP</a></strong>
+            </li>
+        </ul>
+        <ul>
+            <li>
+                <a href="/patients">All patients</a>
+            </li>
+        </ul>
+    </nav>
+    <section class="container">
+        <article>
+            {% block content %}
+            {% endblock %}
+        </article>
+    </section>
 </body>
 </html>
