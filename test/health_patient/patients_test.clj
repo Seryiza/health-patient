@@ -17,7 +17,7 @@
    :address (re-rand #"[A-Za-z0-9\ ]{1,40}")
    :cmi_number (re-rand #"[1-9]{16}")})
 
-(deftest test-list-patients
+(deftest list-patients-test
   (testing "List all patients"
     (test-utils/insert-test-records :patients
                                     generate-patient
@@ -29,7 +29,7 @@
       (test-utils/html-has-text? html [:p] "Sergey")
       (test-utils/html-has-text? html [:p] "Uniqueman"))))
 
-(deftest test-show-patient
+(deftest show-patient-test
   (testing "Show existing patient"
     (test-utils/insert-test-records :patients
                                     generate-patient
@@ -45,7 +45,7 @@
     (let [response (app (mock/request :get "/patients/2"))]
       (test-utils/http-status? response 404))))
 
-(deftest test-delete-patient
+(deftest delete-patient-test
   (testing "Delete existing patient and try delete again"
     (test-utils/insert-test-records :patients
                                     generate-patient
@@ -60,7 +60,7 @@
     (let [response (app (mock/request :delete "/patients/2"))]
       (test-utils/http-status? response 404))))
 
-(deftest test-update-patient
+(deftest update-patient-test
   (testing "Update exisiting patient"
     (test-utils/insert-test-records :patients
                                     generate-patient
@@ -74,7 +74,7 @@
       (test-utils/http-status? response 200)
       (test-utils/html-has-text? html [:p] "Updated-Sergey"))))
 
-(deftest test-insert-patient
+(deftest insert-patient-test
   (testing "Insert new patient"
     (let [response (-> (mock/request :post "/patients")
                        (mock/json-body (generate-patient))
