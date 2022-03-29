@@ -2,7 +2,8 @@
   (:require [mount.core :as mount :refer [defstate]]
             [ring.adapter.jetty :as ring-jetty]
             [health-patient.config :refer [config]]
-            [health-patient.app :refer [app]]))
+            [health-patient.app :refer [app]])
+  (:gen-class))
 
 (defstate http-server
   :start (ring-jetty/run-jetty app {:port (:http-port config)

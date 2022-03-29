@@ -28,7 +28,10 @@
 
   :resource-paths ["resources"]
   :source-paths ["src/backend"]
-  :profiles {:dev {:source-paths ["dev"]
+  :profiles {:uberjar {:main health-patient.server
+                       :uberjar-name "health-patient.jar"
+                       :aot :all}
+             :dev {:source-paths ["dev"]
                    :dependencies [[org.clojure/tools.namespace "1.2.0"]]}}
 
   :cljsbuild {:builds [{:source-paths ["src/frontend"]
