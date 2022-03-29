@@ -11,15 +11,13 @@ The project requires [Leiningen](https://leiningen.org/) (2.0.0+).
 ```sh
 # Setup env variables:
 $ export HTTP_PORT=8080
-$ export DATABASE_PORT=5432
-$ export DATABASE_PASSWORD=pass
 $ export DATABASE_JDBC_URL=jdbc:postgresql://127.0.0.1:5432/health_patient?user=postgres&password=pass&stringtype=unspecified
 
-# Start repl
+# Start repl:
 $ make install
 $ make start
 
-# Start server
+# Start server:
 user=> (dev)            # Enter to development namespace
 health-repl=> (start)   # Start systems (db connection, http server...)
 health-repl=> (refresh) # Reload changed namespaces and restart systems
