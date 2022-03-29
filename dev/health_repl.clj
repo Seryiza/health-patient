@@ -1,10 +1,8 @@
 (ns health-repl
   (:require [health-patient.server :as health-patient]
-            [clojure.tools.namespace.repl :as repl]
-            [selmer.parser :as selmer]))
+            [clojure.tools.namespace.repl :as repl]))
 
 (repl/set-refresh-dirs "src")
-(selmer/cache-off!)
 
 (defn start []
   (health-patient/start))

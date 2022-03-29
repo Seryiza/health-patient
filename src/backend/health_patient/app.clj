@@ -7,10 +7,11 @@
             [ring.middleware.flash :refer [wrap-flash]]
             [ring.middleware.json :refer [wrap-json-response wrap-json-params]]
             [health-patient.html :as html]
+            [health-patient.views.index :as index-views]
             [health-patient.patients.handlers :as patients]))
 
-(defn show-index-page [request]
-  (html/render request "index.html"))
+(defn show-index-page [_]
+  (html/render (index-views/index-page)))
 
 (def app-routes
   [["/" {:get show-index-page}]

@@ -18,7 +18,7 @@
                  [funcool/struct "1.4.0"]
                  [enlive "1.1.6"]
                  [metosin/reitit "0.5.17"]
-                 [selmer "1.12.50"]
+                 [hiccup "1.0.5"]
                  [re-rand "0.1.0"]
                  [prismatic/dommy "1.1.0"]
                  [cljs-ajax "0.8.4"]]

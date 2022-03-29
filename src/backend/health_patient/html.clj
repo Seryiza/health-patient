@@ -1,10 +1,8 @@
 (ns health-patient.html
-    (:require [selmer.parser :as selmer]
+    (:require [hiccup.core :as hiccup]
               [clojure.java.io :as io]))
 
-(selmer/set-resource-path! (io/resource "html"))
-
-(defn render [request template-name & [params]]
+(defn render [template]
   {:status 200
    :headers {"Content-Type" "text/html; charset=utf-8"}
-   :body (selmer/render-file template-name params)})
+   :body (hiccup/html template)})

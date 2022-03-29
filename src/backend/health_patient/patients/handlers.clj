@@ -3,6 +3,9 @@
             [struct.core :as st]
             [health-patient.html :as html]
             [health-patient.db :refer [db]]
+            [health-patient.patients.views.list :as list-views]
+            [health-patient.patients.views.show :as show-views]
+            [health-patient.patients.views.form :as form-views]
             [health-patient.patients.db :as patients]))
 
 (def +patient-scheme+
@@ -16,25 +19,26 @@
 
 (defn show-all-patients [request]
   (let [all-patients (patients/all-patients db)]
-    (html/render request "patients/list.html" {:patients all-patients})))
+    (html/render (list-views/list-page all-patients))))
 
 (defn show-patient [request]
   (let [patient-id (-> request :path-params :id)
         patient (patients/patient-by-id db {:id patient-id})]
     (if (nil? patient)
       (response/not-found "Patient not found.")
-      (html/render request "patients/show.html" {:patient patient}))))
+      (html/render (show-views/show-page patient)))))
 
-(defn show-create-form [request]
-  (html/render request "patients/form.html"))
+(defn show-create-form [_]
+  (html/render (form-views/form-page {:patient {}
+                                      :patient-exist? false})))
 
 (defn show-edit-form [request]
   (let [patient-id (-> request :path-params :id)
         patient (patients/patient-by-id db {:id patient-id})]
     (if (nil? patient)
       (response/not-found "Patient not found.")
-      (html/render request "patients/form.html" {:patient-exist? true
-                                                 :patient patient}))))
+      (html/render (form-views/form-page {:patient patient
+                                          :patient-exist? true})))))
 
 (defn delete-patient [request]
   (let [patient-id (-> request :path-params :id)
