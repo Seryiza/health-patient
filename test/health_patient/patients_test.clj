@@ -26,8 +26,8 @@
     (let [response (app (mock/request :get "/patients"))
           html (test-utils/parse-html response)]
       (test-utils/http-status? response 200)
-      (test-utils/html-has-text? html [:p] "Sergey")
-      (test-utils/html-has-text? html [:p] "Uniqueman"))))
+      (test-utils/html-has-text? html [:td] "Sergey")
+      (test-utils/html-has-text? html [:td] "Uniqueman"))))
 
 (deftest show-patient-test
   (testing "Show existing patient"
@@ -39,7 +39,8 @@
     (let [response (app (mock/request :get "/patients/1"))
           html (test-utils/parse-html response)]
       (test-utils/http-status? response 200)
-      (test-utils/html-has-text? html [:p] "Sergey Zaborovsky")))
+      (test-utils/html-has-text? html [:p] "Sergey")
+      (test-utils/html-has-text? html [:p] "Sergey")))
 
   (testing "Don't show non-existing patient"
     (let [response (app (mock/request :get "/patients/2"))]
