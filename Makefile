@@ -10,8 +10,14 @@ env-prepare:
 install:
 	lein deps
 
+start: migrate
+	lein repl
+
 frontend:
 	lein cljsbuild once
+
+auto-frontend:
+	lein cljsbuild auto
 
 test:
 	lein test
@@ -31,3 +37,6 @@ docker-build:
 docker-test:
 	docker-compose run app make migrate
 	docker-compose run app make test
+
+docker-db:
+	docker-compose up -d db
