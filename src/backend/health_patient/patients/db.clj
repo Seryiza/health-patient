@@ -3,4 +3,3 @@
             [clojure.java.io :as io]))
 
 (hugsql/def-db-fns (io/resource "sql/patients.sql"))
-
