@@ -31,7 +31,7 @@ $ make docker-build
 $ make docker-db    # Database will run in background
 ```
 
-Don't forget update `DATABASE_JDBC_URL` env variable
+Don't forget update `DATABASE_JDBC_URL` env variable if necessary
 
 ### ClojureScript
 ```sh
