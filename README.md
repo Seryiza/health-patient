@@ -72,3 +72,4 @@ And restart changed namespaces by default mapping `<localleader>rr`. See [Conjur
 - Почитать и сделать более удобный cljs workflow с приятным repl
 - Добавить деплой через k8s
 - Оптимизировать `make ci` (сейчас дважды происходит скачивание пакетов из-за независимых запусков `docker-compose run`)
+- Добавить аутентификацию/авторизацию
