@@ -73,3 +73,4 @@ And restart changed namespaces by default mapping `<localleader>rr`. See [Conjur
 - Добавить деплой через k8s
 - Оптимизировать `make ci` (сейчас дважды происходит скачивание пакетов из-за независимых запусков `docker-compose run`)
 - Добавить аутентификацию/авторизацию
+- Добавить милые 404 / 500
