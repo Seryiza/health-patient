@@ -48,8 +48,6 @@ vim.g['conjure#client#clojure#nrepl#refresh#after'] = 'health-repl/restart'
 And restart changed namespaces by default mapping `<localleader>rr`. See [Conjure doc](https://github.com/Olical/conjure/blob/master/doc/conjure-client-clojure-nrepl.txt). It's very cool!
 
 ## Технические хотелки
-- Добавить валидацию на стороне клиента
-    - На библиотеке `struct` (как на сервере, вынеся схемы в общее пространство)
 - Пройтись свежим взглядом, добавить док-строки, если необходимо
 - Добавить html escaping во все места вывода
 - Добавить более красивое форматирование дат
@@ -74,3 +72,7 @@ And restart changed namespaces by default mapping `<localleader>rr`. See [Conjur
 - Оптимизировать `make ci` (сейчас дважды происходит скачивание пакетов из-за независимых запусков `docker-compose run`)
 - Добавить аутентификацию/авторизацию
 - Добавить милые 404 / 500
+- Добавить linting в CI
+- Добавить отправку ошибок куда-нибудь (в Sentry, напр.)
+- Заиспользовать [testcontainers](https://github.com/javahippie/clj-test-containers) для более продвинутого запуска тестов?
+- Написать фронтенда макрос "выполни функции, если валидация по схеме прошла успешно"
