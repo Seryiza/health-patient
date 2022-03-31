@@ -1,9 +1,9 @@
 (ns health-patient.patients.form-page
   (:require [dommy.core :as dommy]
-            [ajax.core :as ajax]
             [struct.core :as st]
             [health-patient.schemes :as schemes]
-            [health-patient.utils :as utils]))
+            [health-patient.utils :as utils]
+            [health-patient.patients.api :as patients-api]))
 
 (def patient-input-names
   [:first_name
@@ -37,36 +37,19 @@
         (dommy/set-attr! field-input :aria-invalid "true")
         (dommy/set-text! field-error error-msg)))))
 
-(defn save-patient! [patient-id patient-data]
-  (ajax/PUT (str "/patients/" patient-id)
-            {:params patient-data
-             :handler #(utils/redirect (str "/patients/" patient-id))
-             :error-handler utils/common-error-handler
-             :format :json
-             :keywords? true}))
-
 (defn try-save-patient! [form]
   (let [patient-id (get-form-patient-id form)
         form-data (utils/get-form-values form patient-input-names)
         [validation-errors patient-data] (st/validate form-data schemes/+patient-scheme+)]
     (if (empty? validation-errors)
-      (save-patient! patient-id patient-data)
+      (patients-api/save-patient! patient-id patient-data)
       (show-form-errors form validation-errors))))
-
-(defn create-patient! [patient-data]
-  (ajax/POST "/patients"
-             {:params patient-data
-              :handler #(utils/redirect (str "/patients/" (:id %)))
-              :error-handler utils/common-error-handler
-              :format :json
-              :response-format :json
-              :keywords? true}))
 
 (defn try-create-patient! [form]
   (let [form-data (utils/get-form-values form patient-input-names)
         [validation-errors patient-data] (st/validate form-data schemes/+patient-scheme+)]
     (if (empty? validation-errors)
-      (create-patient! patient-data)
+      (patients-api/create-patient! patient-data)
       (show-form-errors form validation-errors))))
 
 (defn init []
