@@ -27,14 +27,14 @@
   :min-lein-version "2.0.0"
 
   :resource-paths ["resources"]
-  :source-paths ["src/backend"]
+  :source-paths ["src/common" "src/backend"]
   :profiles {:uberjar {:main health-patient.server
                        :uberjar-name "health-patient.jar"
                        :aot :all}
              :dev {:source-paths ["dev"]
                    :dependencies [[org.clojure/tools.namespace "1.2.0"]]}}
 
-  :cljsbuild {:builds [{:source-paths ["src/frontend"]
+  :cljsbuild {:builds [{:source-paths ["src/common" "src/frontend"]
                          :compiler {:output-to "resources/public/js/app.js"
                                     :optimizations :whitespace
                                     :pretty-print true}}]}

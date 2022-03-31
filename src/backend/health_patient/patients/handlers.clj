@@ -3,19 +3,11 @@
             [struct.core :as st]
             [health-patient.html :as html]
             [health-patient.db :refer [db]]
+            [health-patient.schemes :as schemes]
             [health-patient.patients.views.list :as list-views]
             [health-patient.patients.views.show :as show-views]
             [health-patient.patients.views.form :as form-views]
             [health-patient.patients.db :as patients]))
-
-(def +patient-scheme+
-  {:first_name [st/required st/string]
-   :last_name [st/required st/string]
-   :middle_name [st/required st/string]
-   :sex [st/required st/string]
-   :birth_date [st/required st/string]
-   :address [st/required st/string]
-   :cmi_number [st/required st/number-str]})
 
 (defn show-all-patients [request]
   (let [all-patients (patients/all-patients db)]
@@ -50,7 +42,7 @@
 (defn update-patient [request]
   (let [patient-id (-> request :path-params :id)
         form-data (-> request :params)
-        [form-errors patient-data] (st/validate form-data +patient-scheme+)
+        [form-errors patient-data] (st/validate form-data schemes/+patient-scheme+)
         patient-data-with-id (assoc patient-data :id patient-id)]
     (if (empty? form-errors)
       (do
@@ -60,7 +52,7 @@
 
 (defn create-patient [request]
   (let [form-data (-> request :params)
-        [form-errors patient-data] (st/validate form-data +patient-scheme+)]
+        [form-errors patient-data] (st/validate form-data schemes/+patient-scheme+)]
     (if (empty? form-errors)
       (let [inserted-data (patients/insert-patient db patient-data)
             patiend-id (:id inserted-data)
