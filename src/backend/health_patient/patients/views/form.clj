@@ -12,6 +12,12 @@
            :name name
            :value value}])
 
+(defn patient-field [name label field]
+  [:div
+    (form/label name (str label ": "))
+    field
+    [:small [:b {:data-error-for name}]]])
+
 (defn form-page [{:keys [patient patient-exist?]}]
   (base/base-template
     [:div
@@ -24,31 +30,40 @@
               {:data-create-patient-form true})
       [:div.errors ""]
       [:div.grid
-       [:div
-        (form/label "first_name" "First name:")
-        (form/text-field "first_name" (:first_name patient))]
-       [:div
-        (form/label "middle_name" "Middle name:")
-        (form/text-field "middle_name" (:middle_name patient))]
-       [:div
-        (form/label "last_name" "Last name:")
-        (form/text-field "last_name" (:last_name patient))]]
+       (patient-field
+         "first_name"
+         "First name"
+         (form/text-field "first_name" (:first_name patient)))
+       (patient-field
+         "middle_name"
+         "Middle name"
+         (form/text-field "middle_name" (:middle_name patient)))
+       (patient-field
+         "last_name"
+         "Last name"
+         (form/text-field "last_name" (:last_name patient)))]
 
       [:div.grid
-       [:div
-        (form/label "sex" "Sex:")
-        (form/drop-down "sex" shown-sex-labels (:sex patient))]
-       [:div
-        (form/label "birth_date" "Birth date:")
-        (date-input "birth_date" (:birth_date patient))]]
+       (patient-field
+         "sex"
+         "Sex"
+         (form/drop-down "sex" shown-sex-labels (:sex patient)))
+       (patient-field
+         "birth_date"
+         "Birth date"
+         (date-input "birth_date" (:birth_date patient)))]
 
-      [:div
-       (form/label "address" "Address:")
-       (form/text-field "address" (:address patient))]
+      [:div.grid
+       (patient-field
+        "address"
+        "Address"
+        (form/text-field "address" (:address patient)))]
 
-      [:div
-       (form/label "cmi_number" "CMI number:")
-       (form/text-field "cmi_number" (:cmi_number patient))]
+      [:div.grid
+       (patient-field
+         "cmi_number"
+         "CMI number"
+         (form/text-field "cmi_number" (:cmi_number patient)))]
 
       [:button {:type "submit"}
        (if patient-exist? "Save" "Create")]]]))
