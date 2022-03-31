@@ -12,10 +12,12 @@
   (dommy/listen! form :submit (fn [event] (.preventDefault event)
                                           (handler event))))
 
+(defn selector-by-name [node-name]
+  (str "[name='" (name node-name) "']"))
+
 (defn get-input-value [form input-name]
-  (let [input-sel (str "[name=" (name input-name) "]")]
-    (when-let [input (dommy/sel1 form input-sel)]
-      (dommy/value input))))
+  (when-let [input (dommy/sel1 form (selector-by-name input-name))]
+    (dommy/value input)))
 
 (defn get-form-values [form input-names]
   (->> input-names
