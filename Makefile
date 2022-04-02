@@ -29,6 +29,8 @@ start-jar:
 migrate:
 	lein migratus migrate
 
+ci: migrate test
+
 docker-ci: docker-setup docker-test
 
 docker-setup: env-prepare docker-build
@@ -37,8 +39,7 @@ docker-build:
 	docker-compose build
 
 docker-test:
-	docker-compose run app make migrate
-	docker-compose run app make test
+	docker-compose run app make ci
 
 docker-db:
 	docker-compose up -d db
