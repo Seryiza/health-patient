@@ -1,12 +1,14 @@
 (ns health-patient.patients.views.list
   (:require [health-patient.views.base :as base]
+            [health-patient.patients.views.common :as common]
+            [hiccup.core :refer [h]]
             [hiccup.element :as elem]))
 
 (defn patient-row [patient]
   [:tr {:data-patient-id (:id patient)}
    [:td (:id patient)]
-   [:td (:cmi_number patient)]
-   [:td (str (:first_name patient) " " (:middle_name patient) " " (:last_name patient))]
+   [:td (-> patient :cmi_number h)]
+   [:td (-> patient common/patient-full-name h)]
    [:td
     (elem/link-to {:role "button"}
                   (str "/patients/" (:id patient))
