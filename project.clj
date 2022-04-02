@@ -1,4 +1,4 @@
-(defproject health-patient "1.0.0"
+(defproject health-patient "1.1.0"
   :description "Web service to work with patients records"
   :url "https://github.com/Seryiza/health-patient"
 
