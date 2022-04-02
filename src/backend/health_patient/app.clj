@@ -11,7 +11,7 @@
             [health-patient.patients.handlers :as patients]))
 
 (defn show-index-page [_]
-  (html/render (index-views/index-page)))
+  (html/response (index-views/index-page)))
 
 (def app-routes
   [["/" {:get show-index-page}]

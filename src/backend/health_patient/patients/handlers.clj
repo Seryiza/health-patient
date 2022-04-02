@@ -11,17 +11,17 @@
 
 (defn show-all-patients [request]
   (let [all-patients (patients/all-patients db)]
-    (html/render (list-views/list-page all-patients))))
+    (html/response (list-views/list-page all-patients))))
 
 (defn show-patient [request]
   (let [patient-id (-> request :path-params :id)
         patient (patients/patient-by-id db {:id patient-id})]
     (if (nil? patient)
       (response/not-found "Patient not found.")
-      (html/render (show-views/show-page patient)))))
+      (html/response (show-views/show-page patient)))))
 
 (defn show-create-form [request]
-  (html/render (form-views/form-page {:patient {}
+  (html/response (form-views/form-page {:patient {}
                                       :patient-exist? false})))
 
 (defn show-edit-form [request]
@@ -29,7 +29,7 @@
         patient (patients/patient-by-id db {:id patient-id})]
     (if (nil? patient)
       (response/not-found "Patient not found.")
-      (html/render (form-views/form-page {:patient patient
+      (html/response (form-views/form-page {:patient patient
                                           :patient-exist? true})))))
 
 (defn delete-patient [request]
