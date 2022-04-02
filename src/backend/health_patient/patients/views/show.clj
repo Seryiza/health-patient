@@ -1,13 +1,14 @@
 (ns health-patient.patients.views.show
   (:require [health-patient.views.base :as base]
             [health-patient.patients.views.common :as common]
+            [health-patient.datetime :as dt]
             [hiccup.element :as elem]
             [hiccup.core :refer [h]]))
 
-(defn patient-field [patient field-fn label]
+(defn patient-field [patient value-fn label]
   [:p
    [:b (str label ": ")]
-   (-> patient field-fn h)])
+   (-> patient value-fn h)])
 
 (defn show-page [patient]
   (base/base-template
@@ -23,6 +24,6 @@
      (patient-field patient :middle_name "Middle name")
      (patient-field patient :last_name "Last name")
      (patient-field patient :sex "Sex")
-     (patient-field patient :birth_date "Birth date")
+     (patient-field patient #(-> % :birth_date dt/format-short-date) "Birth date")
      (patient-field patient :address "Address")
      (patient-field patient :cmi_number "CMI number")]))
