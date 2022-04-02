@@ -1,6 +1,5 @@
 (ns health-patient.html
-    (:require [hiccup.core :as hiccup]
-              [clojure.java.io :as io]))
+    (:require [hiccup.core :as hiccup]))
 
 (defn render [template]
   {:status 200
