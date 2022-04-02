@@ -20,7 +20,7 @@
       (response/not-found "Patient not found.")
       (html/render (show-views/show-page patient)))))
 
-(defn show-create-form [_]
+(defn show-create-form [request]
   (html/render (form-views/form-page {:patient {}
                                       :patient-exist? false})))
 
