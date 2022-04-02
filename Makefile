@@ -1,8 +1,6 @@
 .PHONY: test
 
 prepare-and-run-jar: install migrate frontend compile-jar start-jar
-ci: docker-setup docker-test
-docker-setup: env-prepare docker-build
 
 env-prepare:
 	cp .env.example .env
@@ -30,6 +28,10 @@ start-jar:
 
 migrate:
 	lein migratus migrate
+
+docker-ci: docker-setup docker-test
+
+docker-setup: env-prepare docker-build
 
 docker-build:
 	docker-compose build
