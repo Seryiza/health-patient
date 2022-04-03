@@ -73,3 +73,4 @@ And restart changed namespaces by default mapping `<localleader>rr`. See [Conjur
 - Написать фронтенда макрос "выполни функции, если валидация по схеме прошла успешно"
 - Изменить место конфигурации с переменных окружения на чтение файла `.env`
 - Добавить преобразование даты из БД в более гибкий объект (java.sql.Date -> LocalDate?)
+- Переписать фронтенд на re-frame / reagent / fulcro / etc
