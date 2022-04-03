@@ -11,3 +11,4 @@
 /.lein-repl-history
 /.lein-failures
 /.nrepl-port
+/figwheel_server.log

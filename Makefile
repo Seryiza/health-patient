@@ -15,7 +15,7 @@ frontend:
 	lein cljsbuild once
 
 auto-frontend:
-	lein cljsbuild auto
+	lein figwheel
 
 test:
 	lein test

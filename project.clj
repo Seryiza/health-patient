@@ -23,7 +23,8 @@
                  [prismatic/dommy "1.1.0"]
                  [cljs-ajax "0.8.4"]]
   :plugins [[migratus-lein "0.7.3"]
-            [lein-cljsbuild "1.1.8"]]
+            [lein-cljsbuild "1.1.8"]
+            [lein-figwheel "0.5.20"]]
   :min-lein-version "2.0.0"
 
   :resource-paths ["resources"]
@@ -34,10 +35,14 @@
              :dev {:source-paths ["dev"]
                    :dependencies [[org.clojure/tools.namespace "1.2.0"]]}}
 
-  :cljsbuild {:builds [{:source-paths ["src/common" "src/frontend"]
-                         :compiler {:output-to "resources/public/js/app.js"
-                                    :optimizations :whitespace
-                                    :pretty-print true}}]}
+  :cljsbuild {:builds [{:id "app"
+                        :source-paths ["src/common" "src/frontend"]
+                        :figwheel true
+                        :compiler {:main "health-patient.app"
+                                   :asset-path "assets/js/out"
+                                   :output-to "resources/public/js/app.js"
+                                   :optimizations :none
+                                   :pretty-print true}}]}
 
   :migratus {:store :database
              :migration-dir "migrations"
