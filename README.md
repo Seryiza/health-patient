@@ -48,11 +48,7 @@ vim.g['conjure#client#clojure#nrepl#refresh#after'] = 'health-repl/restart'
 And restart changed namespaces by default mapping `<localleader>rr`. See [Conjure doc](https://github.com/Olical/conjure/blob/master/doc/conjure-client-clojure-nrepl.txt). It's very cool!
 
 ## Технические хотелки
-- Пройтись свежим взглядом, добавить док-строки, если необходимо
-- Добавить html escaping во все места вывода
-- Добавить более красивое форматирование дат
 - Вывод "нет пациентов", если в списке нет пациентов
-- Подумать о замене своей функции `html/render` на `ring.util.response/response` или middleware для рендера hiccup
 - Подумать про более изящное оформление селекторов в cljs
     - Оставить строками? Перенести на структуру данных?
 - Добавить обработку кейса с дублированием номера ОМС
@@ -69,10 +65,11 @@ And restart changed namespaces by default mapping `<localleader>rr`. See [Conjur
 - Подумать про функции для генерации роутов (url)
 - Почитать и сделать более удобный cljs workflow с приятным repl
 - Добавить деплой через k8s
-- Оптимизировать `make ci` (сейчас дважды происходит скачивание пакетов из-за независимых запусков `docker-compose run`)
 - Добавить аутентификацию/авторизацию
 - Добавить милые 404 / 500
 - Добавить linting в CI
 - Добавить отправку ошибок куда-нибудь (в Sentry, напр.)
 - Заиспользовать [testcontainers](https://github.com/javahippie/clj-test-containers) для более продвинутого запуска тестов?
 - Написать фронтенда макрос "выполни функции, если валидация по схеме прошла успешно"
+- Изменить место конфигурации с переменных окружения на чтение файла `.env`
+- Добавить преобразование даты из БД в более гибкий объект (java.sql.Date -> LocalDate?)
