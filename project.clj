@@ -17,7 +17,7 @@
                  [ring/ring-json "0.5.1"]
                  [funcool/struct "1.4.0"]
                  [enlive "1.1.6"]
-                 [metosin/reitit "0.5.17"]
+                 [route-map "0.0.7"]
                  [hiccup "1.0.5"]
                  [re-rand "0.1.0"]
                  [prismatic/dommy "1.1.0"]
@@ -39,7 +39,7 @@
                         :source-paths ["src/common" "src/frontend"]
                         :figwheel true
                         :compiler {:main "health-patient.app"
-                                   :asset-path "assets/js/out"
+                                   :asset-path "/js/out"
                                    :output-to "resources/public/js/app.js"
                                    :optimizations :none
                                    :pretty-print true}}]}

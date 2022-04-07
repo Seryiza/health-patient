@@ -9,11 +9,11 @@
      [:meta {:name "viewport" :content "width=device-width, initial-scale=1"}]
      [:title "Health Patient"]
      (page/include-css "https://unpkg.com/@picocss/pico@latest/css/pico.min.css")
-     (page/include-css "/assets/css/app.css")]
+     (page/include-css "/css/app.css")]
     [:body
      [:nav.container
       [:ul [:li [:strong (elem/link-to "/" "HP")]]]
       [:ul [:li (elem/link-to "/patients" "All patients")]]]
      [:section.container
       [:article content]]
-     (page/include-js "/assets/js/app.js")]))
+     (page/include-js "/js/app.js")]))
