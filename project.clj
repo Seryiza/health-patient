@@ -9,7 +9,6 @@
                  [migratus "1.3.6"]
                  [com.zaxxer/HikariCP "5.0.1"]
                  [com.github.seancorfield/honeysql "2.2.868"]
-                 [mount "0.1.16"]
                  [ring/ring-core "1.9.5"]
                  [ring/ring-jetty-adapter "1.9.5"]
                  [ring/ring-mock "0.4.0"]

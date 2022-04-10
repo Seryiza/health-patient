@@ -1,6 +1,10 @@
-(ns health-patient.config
-  (:require [mount.core :refer [defstate]]))
+(ns health-patient.config)
 
-(defstate config
-  :start {:http-port (Integer/parseInt (System/getenv "HTTP_PORT"))
-          :database-jdbc-url (System/getenv "DATABASE_JDBC_URL")})
+(def config
+  (atom
+    {:http-port (Integer/parseInt (System/getenv "HTTP_PORT"))
+     :database-jdbc-url (System/getenv "DATABASE_JDBC_URL")
+     :test-database-jdbc-url (System/getenv "TEST_DATABASE_JDBC_URL")}))
+
+(defn get-val [config-key]
+  (get @config config-key))

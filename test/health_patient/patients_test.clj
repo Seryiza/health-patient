@@ -1,12 +1,12 @@
 (ns health-patient.patients-test
   (:require [re-rand :refer [re-rand]]
-            [clojure.test :refer [deftest testing]]
+            [clojure.test :refer [deftest testing use-fixtures]]
             [ring.mock.request :as mock]
             [health-patient.app :refer [app]]
             [health-patient.test-utils :as test-utils]))
 
-(test-utils/use-mount-app-fixture)
-(test-utils/use-transactable-tests-fixture)
+(use-fixtures :once test-utils/with-test-db)
+(use-fixtures :each test-utils/with-transaction)
 
 (defn generate-patient []
   {:first_name (re-rand #"[A-Z][a-z]{1,20}")
@@ -23,7 +23,7 @@
                                     generate-patient
                                     [{:first_name "Sergey"}
                                      {:first_name "Uniqueman"}])
-    (let [response (app (mock/request :get "/patients"))
+    (let [response (@app (mock/request :get "/patients"))
           html (test-utils/parse-html response)]
       (test-utils/http-status? response 200)
       (test-utils/html-has-text? html [:td] "Sergey")
@@ -36,14 +36,14 @@
                                     [{:id 1
                                       :first_name "Sergey"
                                       :last_name "Zaborovsky"}])
-    (let [response (app (mock/request :get "/patients/1"))
+    (let [response (@app (mock/request :get "/patients/1"))
           html (test-utils/parse-html response)]
       (test-utils/http-status? response 200)
       (test-utils/html-has-text? html [:p] "Sergey")
       (test-utils/html-has-text? html [:p] "Sergey")))
 
   (testing "Don't show non-existing patient"
-    (let [response (app (mock/request :get "/patients/2"))]
+    (let [response (@app (mock/request :get "/patients/2"))]
       (test-utils/http-status? response 404))))
 
 (deftest delete-patient-test
@@ -52,13 +52,13 @@
                                     generate-patient
                                     [{:id 1
                                       :first_name "Sergey"}])
-    (let [response (app (mock/request :delete "/patients/1"))]
+    (let [response (@app (mock/request :delete "/patients/1"))]
       (test-utils/http-status? response 200))
-    (let [response (app (mock/request :delete "/patients/1"))]
+    (let [response (@app (mock/request :delete "/patients/1"))]
       (test-utils/http-status? response 404)))
 
   (testing "Delete non-existing patient"
-    (let [response (app (mock/request :delete "/patients/2"))]
+    (let [response (@app (mock/request :delete "/patients/2"))]
       (test-utils/http-status? response 404))))
 
 (deftest update-patient-test
@@ -68,9 +68,9 @@
                                     [{:id 1, :first_name "Not-Sergey"}])
     (let [response (-> (mock/request :put "/patients/1")
                        (mock/json-body (test-utils/make-test-record generate-patient {:first_name "Updated-Sergey"}))
-                       app)]
+                       (@app))]
       (test-utils/http-status? response 200))
-    (let [response (app (mock/request :get "/patients/1"))
+    (let [response (@app (mock/request :get "/patients/1"))
           html (test-utils/parse-html response)]
       (test-utils/http-status? response 200)
       (test-utils/html-has-text? html [:p] "Updated-Sergey"))))
@@ -79,5 +79,5 @@
   (testing "Insert new patient"
     (let [response (-> (mock/request :post "/patients")
                        (mock/json-body (generate-patient))
-                       app)]
+                       (@app))]
       (test-utils/http-status? response 201))))

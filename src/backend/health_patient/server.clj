@@ -1,20 +1,24 @@
 (ns health-patient.server
-  (:require [mount.core :as mount :refer [defstate]]
-            [ring.adapter.jetty :as ring-jetty]
-            [health-patient.config :refer [config]]
+  (:require [ring.adapter.jetty :as ring-jetty]
+            [health-patient.config :as config]
             [health-patient.app :refer [app]])
   (:gen-class))
 
-(defstate http-server
-  :start (ring-jetty/run-jetty app {:port (:http-port config)
-                                    :join? false})
-  :stop (.stop http-server))
+(def http-server (atom nil))
+
+(defn create-server [handler]
+  (ring-jetty/run-jetty handler {:port (config/get-val :http-port)
+                                 :join? false}))
+
+(defn stop-server [server]
+  (if (not (nil? server))
+    (.stop server)))
 
 (defn start []
-  (mount/start))
+  (reset! http-server (create-server @app)))
 
 (defn stop []
-  (mount/stop))
+  (swap! http-server stop-server))
 
 (defn -main []
   (start))

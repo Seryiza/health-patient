@@ -1,28 +1,30 @@
 (ns health-patient.db
-  (:require [mount.core :refer [defstate]]
-            [next.jdbc.connection :as jdbc-conn]
+  (:require [next.jdbc.connection :as jdbc-conn]
             [next.jdbc.result-set :as rs]
             [next.jdbc :as jdbc]
             [honey.sql :as sql]
-            [health-patient.config :refer [config]])
+            [health-patient.config :as config])
   (:import com.zaxxer.hikari.HikariDataSource))
 
-(defstate db
-  :start (jdbc-conn/->pool HikariDataSource {:jdbcUrl (:database-jdbc-url config)
-                                             :maximumPoolSize 15})
-  :stop (.close db))
+(defn make-db-conn [jdbc-url]
+  (jdbc-conn/->pool
+    HikariDataSource
+    {:jdbcUrl jdbc-url
+     :maximumPoolSize 15}))
 
-(def default-opts {:builder-fn rs/as-unqualified-maps})
+(def db (atom (make-db-conn (config/get-val :database-jdbc-url))))
+
+(def default-jdbc-opts {:builder-fn rs/as-unqualified-maps})
 
 (defn honey-execute!
   ([db statement]
-   (honey-execute! db statement default-opts))
+   (honey-execute! db statement default-jdbc-opts))
   ([db statement opts]
    (jdbc/execute! db (sql/format statement) opts)))
 
 (defn honey-execute-one!
   ([db statement]
-   (honey-execute-one! db statement default-opts))
+   (honey-execute-one! db statement default-jdbc-opts))
   ([db statement opts]
    (jdbc/execute-one! db (sql/format statement) opts)))
 

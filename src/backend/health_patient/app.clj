@@ -1,6 +1,5 @@
 (ns health-patient.app
-  (:require [mount.core :refer [defstate]]
-            [ring.middleware.params :refer [wrap-params]]
+  (:require [ring.middleware.params :refer [wrap-params]]
             [ring.middleware.keyword-params :refer [wrap-keyword-params]]
             [ring.middleware.session :refer [wrap-session]]
             [ring.middleware.flash :refer [wrap-flash]]
@@ -29,12 +28,13 @@
     ((:match found-route) (update-in request [:path-params] merge (:params found-route)))
     {:status 404 :body "Not found"}))
 
-(defstate app
-  :start (-> handler
-             wrap-json-response
-             wrap-flash
-             wrap-session
-             wrap-keyword-params
-             wrap-json-params
-             wrap-params
-             (wrap-resource "public")))
+(def app
+  (atom
+    (-> handler
+        wrap-json-response
+        wrap-flash
+        wrap-session
+        wrap-keyword-params
+        wrap-json-params
+        wrap-params
+        (wrap-resource "public"))))

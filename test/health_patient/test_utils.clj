@@ -2,38 +2,34 @@
   (:require [next.jdbc :as jdbc]
             [next.jdbc.sql :as sql]
             [net.cgrand.enlive-html :as enlive]
-            [mount.core :as mount]
             [clojure.test :as test]
             [clojure.string :as str]
-            [health-patient.app :refer [app]]
-            [health-patient.config :refer [config]]
-            [health-patient.db :refer [db]])
+            [health-patient.app :as app]
+            [health-patient.config :as config]
+            [health-patient.db :as db])
   (:import [java.io StringReader]))
 
-(defn use-mount-app-fixture []
-  (test/use-fixtures
-    :once
-    (fn [t]
-      (mount/start #'health-patient.config/config
-                   #'health-patient.db/db
-                   #'health-patient.app/app)
-      (t)
-      (mount/stop))))
+(def test-db (atom (db/make-db-conn (config/get-val :test-database-jdbc-url))))
 
-(defn use-transactable-tests-fixture []
-  (test/use-fixtures
-    :each
-    (fn [t]
-      (jdbc/with-transaction [tx db {:rollback-only true}]
-        (with-redefs [health-patient.db/db tx]
-          (t))))))
+(defn with-test-db [t]
+  (let [db-before-tests @db/db]
+    (reset! db/db @test-db)
+    (t)
+    (reset! db/db db-before-tests)))
+
+(defn with-transaction [t]
+  (jdbc/with-transaction [tx @test-db {:rollback-only true}]
+    (let [db-before-test @db/db]
+      (reset! db/db tx)
+      (t)
+      (reset! db/db db-before-test))))
 
 (defn make-test-record [generator needed-data]
   (merge (generator) needed-data))
 
 (defn insert-test-records [table generator needed-records-data]
   (doseq [record (map #(make-test-record generator %) needed-records-data)]
-    (sql/insert! db table record)))
+    (sql/insert! @db/db table record)))
 
 (defn parse-html [response]
   (enlive/html-resource (StringReader. (:body response))))

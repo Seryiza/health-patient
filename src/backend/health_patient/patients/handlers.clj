@@ -10,23 +10,23 @@
             [health-patient.patients.db :as patients]))
 
 (defn show-all-patients [request]
-  (let [all-patients (vec (patients/all-patients db))]
+  (let [all-patients (patients/all-patients @db)]
     (html/response (list-views/list-page all-patients))))
 
 (defn show-patient [request]
   (let [patient-id (-> request :path-params :patient-id)
-        patient (patients/patient-by-id db {:id patient-id})]
+        patient (patients/patient-by-id @db {:id patient-id})]
     (if (nil? patient)
       (response/not-found "Patient not found.")
       (html/response (show-views/show-page patient)))))
 
 (defn show-create-form [request]
   (html/response (form-views/form-page {:patient {}
-                                      :patient-exist? false})))
+                                        :patient-exist? false})))
 
 (defn show-edit-form [request]
   (let [patient-id (-> request :path-params :patient-id)
-        patient (patients/patient-by-id db {:id patient-id})]
+        patient (patients/patient-by-id @db {:id patient-id})]
     (if (nil? patient)
       (response/not-found "Patient not found.")
       (html/response (form-views/form-page {:patient patient
@@ -34,7 +34,7 @@
 
 (defn delete-patient [request]
   (let [patient-id (-> request :path-params :patient-id)
-        affected-patients (patients/delete-patient-by-id db {:id patient-id})]
+        affected-patients (patients/delete-patient-by-id @db {:id patient-id})]
     (if (zero? affected-patients)
       (response/not-found "Patient not found.")
       (response/response "Patient deleted."))))
@@ -46,7 +46,7 @@
         patient-data-with-id (assoc patient-data :id patient-id)]
     (if (empty? form-errors)
       (do
-        (patients/update-patient-by-id db patient-data-with-id)
+        (patients/update-patient-by-id @db patient-data-with-id)
         (response/response nil))
       (response/bad-request {:form-errors form-errors}))))
 
@@ -54,7 +54,7 @@
   (let [form-data (-> request :params)
         [form-errors patient-data] (st/validate form-data schemes/+patient-scheme+)]
     (if (empty? form-errors)
-      (let [inserted-data (patients/insert-patient db patient-data)
+      (let [inserted-data (patients/insert-patient @db patient-data)
             patiend-id (:id inserted-data)
             patient-url (str "/patients/" patiend-id)]
         (response/created patient-url {:id patiend-id}))
