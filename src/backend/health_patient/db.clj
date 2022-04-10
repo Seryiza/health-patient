@@ -1,14 +1,23 @@
 (ns health-patient.db
   (:require [mount.core :refer [defstate]]
             [next.jdbc.connection :as jdbc-conn]
-            [hugsql.core :as hugsql]
-            [hugsql.adapter.next-jdbc :as hugsql-adapter]
+            [next.jdbc.result-set :as rs]
+            [next.jdbc :as jdbc]
+            [honey.sql :as sql]
             [health-patient.config :refer [config]])
   (:import com.zaxxer.hikari.HikariDataSource))
 
 (defstate db
-  :start (do
-           (hugsql/set-adapter! (hugsql-adapter/hugsql-adapter-next-jdbc))
-           (jdbc-conn/->pool HikariDataSource {:jdbcUrl (:database-jdbc-url config)
-                                               :maximumPoolSize 15}))
+  :start (-> (jdbc-conn/->pool HikariDataSource {:jdbcUrl (:database-jdbc-url config)
+                                                 :maximumPoolSize 15})
+             (jdbc/with-options {:builder-fn rs/as-unqualified-maps}))
   :stop (.close db))
+
+(defn honey-execute! [db statement & [opts]]
+  (jdbc/execute! db (sql/format statement) opts))
+
+(defn honey-execute-one! [db statement & [opts]]
+  (jdbc/execute-one! db (sql/format statement) opts))
+
+(defn honey-update! [db statement & [opts]]
+  (:next.jdbc/update-count (honey-execute-one! db statement opts)))
