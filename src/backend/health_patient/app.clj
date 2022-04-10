@@ -15,18 +15,18 @@
   (html/response (index-views/index-page)))
 
 (def routes
-  {:GET show-index-page
-   "patients" {:GET patients/show-all-patients
-               :POST patients/create-patient
-               [:patient-id] {:GET patients/show-patient
-                              :PUT patients/update-patient
-                              :DELETE patients/delete-patient
-                              "edit" {:GET patients/show-edit-form}}}
-   "create-patient" {:GET patients/show-create-form}})
+  {:GET #'show-index-page
+   "patients" {:GET #'patients/show-all-patients
+               :POST #'patients/create-patient
+               [:patient-id] {:GET #'patients/show-patient
+                              :PUT #'patients/update-patient
+                              :DELETE #'patients/delete-patient
+                              "edit" {:GET #'patients/show-edit-form}}}
+   "create-patient" {:GET #'patients/show-create-form}})
 
 (defn handler [{:keys [uri request-method] :as request}]
-  (if-let [response (rm/match [request-method uri] routes)]
-    ((:match response) (update-in request [:params] merge (:params response)))
+  (if-let [found-route (rm/match [request-method uri] routes)]
+    ((:match found-route) (update-in request [:path-params] merge (:params found-route)))
     {:status 404 :body "Not found"}))
 
 (defstate app
