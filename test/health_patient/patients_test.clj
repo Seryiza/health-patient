@@ -67,7 +67,7 @@
                                     generate-patient
                                     [{:id 1, :first_name "Not-Sergey"}])
     (let [updated-patient-data (test-utils/make-test-record generate-patient {:first_name "Updated-Sergey"})
-          response (app/handler (test-utils/json-request :put "/patients/1" updated-patient-data))]
+          response (app/handler (test-utils/json-request :put "/patients/1" :json updated-patient-data))]
       (m/assert {:status 200} response))
     (let [response (app/handler (test-utils/json-request :get "/patients/1"))]
       (m/assert {:status 200 :body {:first_name "Updated-Sergey"}} response))))
@@ -75,5 +75,15 @@
 (deftest insert-patient-test
   (testing "Insert new patient"
     (let [patient-data (generate-patient)
-          response (app/handler (test-utils/json-request :post "/patients" patient-data))]
+          response (app/handler (test-utils/json-request :post "/patients" :json patient-data))]
       (m/assert {:status 201} response))))
+
+(deftest search-patient-test
+  (testing "Search patients by name"
+    (test-utils/insert-test-records :patients generate-patient [{:first_name "Sergey"}
+                                                                {:first_name "Ivan"}])
+    (let [response (app/handler (test-utils/json-request :get "/patients" :query {:search-name "Ser"}))]
+      (m/assert
+        {:status 200
+         :body {:patients [{:full_name #(str/includes? % "Sergey")}]}}
+        response))))

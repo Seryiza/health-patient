@@ -1,12 +1,18 @@
 (ns health-patient.patients.db
-  (:require [health-patient.db :as db]))
+  (:require [honey.sql :as sql]
+            [health-patient.db :as db]))
 
-(defn all-patients [db]
+(defn all-patients [db & {:keys [search-name]}]
   (db/honey-execute!
     db
     {:select :*
      :from :patients
-     :where [:= :is_deleted false]
+     :where [:and
+             [:= :is_deleted false]
+             (when search-name
+               [:ilike
+                [:|| :first_name [:inline " "] :middle_name [:inline " "] :last_name]
+                (str "%" search-name "%")])]
      :order-by [:id]}))
 
 (defn patient-by-id [db {:keys [id]}]

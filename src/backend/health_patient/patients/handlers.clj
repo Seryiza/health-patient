@@ -9,7 +9,8 @@
   (str (:first_name patient) " " (:middle_name patient) " " (:last_name patient)))
 
 (defn show-all-patients [request]
-  (let [all-patients (patients/all-patients @db)]
+  (let [search-name (-> request :params :search-name)
+        all-patients (patients/all-patients @db :search-name search-name)]
     (response/response
       {:patients (map (fn [patient] {:id (:id patient)
        :cmi_number (:cmi_number patient)
