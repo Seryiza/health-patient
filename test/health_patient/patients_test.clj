@@ -1,8 +1,11 @@
 (ns health-patient.patients-test
   (:require [re-rand :refer [re-rand]]
             [clojure.test :refer [deftest testing use-fixtures]]
+            [clojure.string :as str]
             [ring.mock.request :as mock]
-            [health-patient.app :refer [app]]
+            [matcho.core :as m]
+            [health-patient.app :as app]
+            [health-patient.patients.handlers :as handlers]
             [health-patient.test-utils :as test-utils]))
 
 (use-fixtures :once test-utils/with-test-db)
@@ -21,63 +24,58 @@
   (testing "List all patients"
     (test-utils/insert-test-records :patients
                                     generate-patient
-                                    [{:first_name "Sergey"}
-                                     {:first_name "Uniqueman"}])
-    (let [response (@app (mock/request :get "/patients"))
-          html (test-utils/parse-html response)]
-      (test-utils/http-status? response 200)
-      (test-utils/html-has-text? html [:td] "Sergey")
-      (test-utils/html-has-text? html [:td] "Uniqueman"))))
+                                    [{:first_name "Sergey"} {:first_name "Uniqueman"}])
+    (let [response (app/handler (test-utils/json-request :get "/patients"))]
+      (m/assert
+        {:status 200
+         :body {:patients [{:full_name #(str/includes? % "Sergey")}
+                           {:full_name #(str/includes? % "Uniqueman")}]}}
+        response))))
+
 
 (deftest show-patient-test
   (testing "Show existing patient"
     (test-utils/insert-test-records :patients
                                     generate-patient
-                                    [{:id 1
-                                      :first_name "Sergey"
-                                      :last_name "Zaborovsky"}])
-    (let [response (@app (mock/request :get "/patients/1"))
-          html (test-utils/parse-html response)]
-      (test-utils/http-status? response 200)
-      (test-utils/html-has-text? html [:p] "Sergey")
-      (test-utils/html-has-text? html [:p] "Sergey")))
+                                    [{:id 1 :first_name "Sergey" :last_name "Zaborovsky"}])
+    (let [response (app/handler (test-utils/json-request :get "/patients/1"))]
+      (m/assert
+        {:status 200
+         :body {:first_name "Sergey"
+                :last_name "Zaborovsky"}}
+        response)))
 
   (testing "Don't show non-existing patient"
-    (let [response (@app (mock/request :get "/patients/2"))]
-      (test-utils/http-status? response 404))))
+    (let [response (app/handler (mock/request :get "/patients/2"))]
+      (m/assert {:status 404} response))))
 
 (deftest delete-patient-test
   (testing "Delete existing patient and try delete again"
     (test-utils/insert-test-records :patients
                                     generate-patient
-                                    [{:id 1
-                                      :first_name "Sergey"}])
-    (let [response (@app (mock/request :delete "/patients/1"))]
-      (test-utils/http-status? response 200))
-    (let [response (@app (mock/request :delete "/patients/1"))]
-      (test-utils/http-status? response 404)))
+                                    [{:id 1 :first_name "Sergey"}])
+    (let [response (app/handler (test-utils/json-request :delete "/patients/1"))]
+      (m/assert {:status 200} response))
+    (let [response (app/handler (test-utils/json-request :delete "/patients/1"))]
+      (m/assert {:status 404} response)))
 
   (testing "Delete non-existing patient"
-    (let [response (@app (mock/request :delete "/patients/2"))]
-      (test-utils/http-status? response 404))))
+    (let [response (app/handler (test-utils/json-request :delete "/patients/2"))]
+      (m/assert {:status 404} response))))
 
 (deftest update-patient-test
   (testing "Update exisiting patient"
     (test-utils/insert-test-records :patients
                                     generate-patient
                                     [{:id 1, :first_name "Not-Sergey"}])
-    (let [response (-> (mock/request :put "/patients/1")
-                       (mock/json-body (test-utils/make-test-record generate-patient {:first_name "Updated-Sergey"}))
-                       (@app))]
-      (test-utils/http-status? response 200))
-    (let [response (@app (mock/request :get "/patients/1"))
-          html (test-utils/parse-html response)]
-      (test-utils/http-status? response 200)
-      (test-utils/html-has-text? html [:p] "Updated-Sergey"))))
+    (let [updated-patient-data (test-utils/make-test-record generate-patient {:first_name "Updated-Sergey"})
+          response (app/handler (test-utils/json-request :put "/patients/1" updated-patient-data))]
+      (m/assert {:status 200} response))
+    (let [response (app/handler (test-utils/json-request :get "/patients/1"))]
+      (m/assert {:status 200 :body {:first_name "Updated-Sergey"}} response))))
 
 (deftest insert-patient-test
   (testing "Insert new patient"
-    (let [response (-> (mock/request :post "/patients")
-                       (mock/json-body (generate-patient))
-                       (@app))]
-      (test-utils/http-status? response 201))))
+    (let [patient-data (generate-patient)
+          response (app/handler (test-utils/json-request :post "/patients" patient-data))]
+      (m/assert {:status 201} response))))

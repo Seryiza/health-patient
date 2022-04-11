@@ -24,6 +24,12 @@
       (t)
       (reset! db/db db-before-test))))
 
+(defn json-request [method uri & [json-params]]
+  {:request-method method
+   :uri uri
+   :content-type "application/json"
+   :params json-params})
+
 (defn make-test-record [generator needed-data]
   (merge (generator) needed-data))
 
