@@ -1,43 +1,41 @@
 (ns health-patient.patients.handlers
   (:require [ring.util.response :as response]
             [struct.core :as st]
-            [health-patient.html :as html]
             [health-patient.db :refer [db]]
             [health-patient.schemes :as schemes]
-            [health-patient.patients.views.list :as list-views]
-            [health-patient.patients.views.show :as show-views]
-            [health-patient.patients.views.form :as form-views]
             [health-patient.patients.db :as patients]))
+
+(defn get-full-patient-name [patient]
+  (str (:first_name patient) " " (:middle_name patient) " " (:last_name patient)))
 
 (defn show-all-patients [request]
   (let [all-patients (patients/all-patients @db)]
-    (html/response (list-views/list-page all-patients))))
+    (response/response
+      {:patients (map (fn [patient] {:id (:id patient)
+       :cmi_number (:cmi_number patient)
+       :full_name (get-full-patient-name patient)}) all-patients)})))
 
 (defn show-patient [request]
   (let [patient-id (-> request :path-params :patient-id)
         patient (patients/patient-by-id @db {:id patient-id})]
     (if (nil? patient)
-      (response/not-found "Patient not found.")
-      (html/response (show-views/show-page patient)))))
-
-(defn show-create-form [request]
-  (html/response (form-views/form-page {:patient {}
-                                        :patient-exist? false})))
-
-(defn show-edit-form [request]
-  (let [patient-id (-> request :path-params :patient-id)
-        patient (patients/patient-by-id @db {:id patient-id})]
-    (if (nil? patient)
-      (response/not-found "Patient not found.")
-      (html/response (form-views/form-page {:patient patient
-                                          :patient-exist? true})))))
+      (response/not-found
+        {:message "Patient not found."})
+      (response/response
+        {:first_name (:first_name patient)
+         :middle_name (:middle_name patient)
+         :last_name (:last_name patient)
+         :sex (:sex patient)
+         :birth_date (:birth_date patient)
+         :address (:address patient)
+         :cmi_number (:cmi_number patient)}))))
 
 (defn delete-patient [request]
   (let [patient-id (-> request :path-params :patient-id)
         affected-patients (patients/delete-patient-by-id @db {:id patient-id})]
     (if (zero? affected-patients)
-      (response/not-found "Patient not found.")
-      (response/response "Patient deleted."))))
+      (response/not-found {:message "Patient not found."})
+      (response/response {:message "Patient deleted."}))))
 
 (defn update-patient [request]
   (let [patient-id (-> request :path-params :patient-id)
@@ -47,7 +45,7 @@
     (if (empty? form-errors)
       (do
         (patients/update-patient-by-id @db patient-data-with-id)
-        (response/response nil))
+        (response/response {:message "Patient updated."}))
       (response/bad-request {:form-errors form-errors}))))
 
 (defn create-patient [request]

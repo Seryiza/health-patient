@@ -19,9 +19,7 @@
                :POST #'patients/create-patient
                [:patient-id] {:GET #'patients/show-patient
                               :PUT #'patients/update-patient
-                              :DELETE #'patients/delete-patient
-                              "edit" {:GET #'patients/show-edit-form}}}
-   "create-patient" {:GET #'patients/show-create-form}})
+                              :DELETE #'patients/delete-patient}}})
 
 (defn handler [{:keys [uri request-method] :as request}]
   (if-let [found-route (rm/match [request-method uri] routes)]
