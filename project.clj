@@ -11,7 +11,6 @@
                  [com.github.seancorfield/honeysql "2.2.868"]
                  [ring/ring-core "1.9.5"]
                  [ring/ring-jetty-adapter "1.9.5"]
-                 [ring/ring-mock "0.4.0"]
                  [ring/ring-json "0.5.1"]
                  [funcool/struct "1.4.0"]
                  [enlive "1.1.6"]

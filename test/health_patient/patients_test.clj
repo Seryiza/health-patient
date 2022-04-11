@@ -2,10 +2,8 @@
   (:require [re-rand :refer [re-rand]]
             [clojure.test :refer [deftest testing use-fixtures]]
             [clojure.string :as str]
-            [ring.mock.request :as mock]
             [matcho.core :as m]
             [health-patient.app :as app]
-            [health-patient.patients.handlers :as handlers]
             [health-patient.test-utils :as test-utils]))
 
 (use-fixtures :once test-utils/with-test-db)
@@ -46,7 +44,7 @@
         response)))
 
   (testing "Don't show non-existing patient"
-    (let [response (app/handler (mock/request :get "/patients/2"))]
+    (let [response (app/handler (test-utils/json-request :get "/patients/2"))]
       (m/assert {:status 404} response))))
 
 (deftest delete-patient-test
