@@ -16,4 +16,4 @@
       [:ul [:li (elem/link-to "/patients" "All patients")]]]
      [:section.container
       [:article content]]
-     (page/include-js "/js/app.js")]))
+     (page/include-js "/js/main.js")]))

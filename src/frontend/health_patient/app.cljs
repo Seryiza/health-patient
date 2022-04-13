@@ -1,9 +1,7 @@
-(ns health-patient.app
-  (:require [health-patient.patients.form-page :as form-page]
-            [health-patient.patients.list-page :as list-page]))
+(ns health-patient.app)
 
-(defn init-all []
-  (form-page/init)
-  (list-page/init))
+(defn init []
+  (js/alert "Connected!"))
 
-(init-all)
+(defn ^:dev/after-load render []
+  (js/console.log "Reloaded"))
