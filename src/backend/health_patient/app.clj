@@ -7,19 +7,20 @@
             [ring.middleware.resource :refer [wrap-resource]]
             [route-map.core :as rm]
             [health-patient.html :as html]
-            [health-patient.views.index :as index-views]
+            [health-patient.views :as views]
             [health-patient.patients.handlers :as patients]))
 
-(defn show-index-page [_]
-  (html/response (index-views/index-page)))
+(defn show-reactive-page [_]
+  (html/response (views/reactive-page)))
 
 (def routes
-  {:GET #'show-index-page
-   "patients" {:GET #'patients/show-all-patients
-               :POST #'patients/create-patient
-               [:patient-id] {:GET #'patients/show-patient
-                              :PUT #'patients/update-patient
-                              :DELETE #'patients/delete-patient}}})
+  {:GET #'show-reactive-page
+   [:default] {:GET #'show-reactive-page}
+   "api" {"patients" {:GET #'patients/show-all-patients
+                      :POST #'patients/create-patient
+                      [:patient-id] {:GET #'patients/show-patient
+                                     :PUT #'patients/update-patient
+                                     :DELETE #'patients/delete-patient}}}})
 
 (defn handler [{:keys [uri request-method] :as request}]
   (if-let [found-route (rm/match [request-method uri] routes)]

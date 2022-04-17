@@ -1,6 +1,12 @@
 ;; shadow-cljs configuration
 {:source-paths ["src/common" "src/frontend"]
- :dependencies [[cider/cider-nrepl "0.24.0"]]
+ :dependencies [[reagent "1.1.1"]
+                [re-frame "1.2.0"]
+                [route-map "0.0.7"]
+                [kibu/pushy "0.3.8"]
+                [day8.re-frame/http-fx "0.2.4"]
+                [cljs-ajax "0.8.4"]
+                [cider/cider-nrepl "0.24.0"]]
  :builds {:app {:target :browser
                 :output-dir "resources/public/js"
                 :asset-path "/js"

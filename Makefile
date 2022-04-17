@@ -14,8 +14,8 @@ start: migrate
 frontend:
 	lein cljsbuild once
 
-auto-frontend:
-	lein figwheel
+dev-frontend:
+	npx shadow-cljs watch app
 
 test:
 	lein test
