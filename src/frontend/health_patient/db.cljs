@@ -2,4 +2,5 @@
 
 (def default-db {:active-page :home
                  :loading {}
-                 :patients []})
+                 :patients []
+                 :flash []})

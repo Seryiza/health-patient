@@ -31,10 +31,12 @@
   (fn [db [_ {:keys [patients]}]]
     (-> db
         (assoc-in [:loading :patients] false)
+        (assoc :flash [])
         (assoc :patients patients))))
 
 (rf/reg-event-db
   :get-patients-failure
   (fn [db _]
     (-> db
+        (assoc :flash ["Can't load patients list from server."])
         (assoc-in [:loading :patients] false))))

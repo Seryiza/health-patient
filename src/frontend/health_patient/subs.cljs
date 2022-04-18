@@ -15,3 +15,8 @@
   :loading
   (fn [db _]
     (:loading db)))
+
+(rf/reg-sub
+  :flash
+  (fn [db _]
+    (:flash db)))
