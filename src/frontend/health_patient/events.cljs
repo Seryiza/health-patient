@@ -17,8 +17,9 @@
 
 (rf/reg-event-fx
   :get-patients
-  (fn [_ _]
-    {:http-xhrio {:method :get
+  (fn [{:keys [db]} _]
+    {:db (assoc-in db [:loading :patients] true)
+     :http-xhrio {:method :get
                   :uri "/api/patients"
                   :format (ajax/json-request-format)
                   :response-format (ajax/json-response-format {:keywords? true})
@@ -28,4 +29,12 @@
 (rf/reg-event-db
   :get-patients-success
   (fn [db [_ {:keys [patients]}]]
-    (assoc db :patients patients)))
+    (-> db
+        (assoc-in [:loading :patients] false)
+        (assoc :patients patients))))
+
+(rf/reg-event-db
+  :get-patients-failure
+  (fn [db _]
+    (-> db
+        (assoc-in [:loading :patients] false))))

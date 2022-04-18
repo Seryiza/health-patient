@@ -10,3 +10,8 @@
   :patients
   (fn [db _]
     (:patients db)))
+
+(rf/reg-sub
+  :loading
+  (fn [db _]
+    (:loading db)))

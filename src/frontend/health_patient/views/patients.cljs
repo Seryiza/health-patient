@@ -16,15 +16,17 @@
   [:div
    [:h2 "Patients"]
    [:a {:href "/create-patient" :role "button"} "Create new patient"]
-   (let [patients @(rf/subscribe [:patients])]
-     (if (empty? patients)
-       [:div "No patients yet."]
-       [:table {:role "grid"}
-        [:thead
-         [:tr
-          [:th "ID"]
-          [:th "CMI number"]
-          [:th "Full name"]
-          [:th "Actions"]]]
-        [:tbody
-         (map patient-entry patients)]]))])
+   (let [loading @(rf/subscribe [:loading])
+         patients @(rf/subscribe [:patients])]
+     (cond
+       (:patients loading) [:div "Loading..."]
+       (empty? patients) [:div "No patients yet."]
+       :else [:table {:role "grid"}
+              [:thead
+               [:tr
+                [:th "ID"]
+                [:th "CMI number"]
+                [:th "Full name"]
+                [:th "Actions"]]]
+              [:tbody
+                (map patient-entry patients)]]))])
