@@ -43,16 +43,15 @@
           value (if transform-fn (transform-fn value) value)]
       (rf/dispatch [dispatch-id field value]))))
 
-(defn patient-list-entry [patient]
+(defn patient-list-entry [patient loading]
   (let [patient-id (:id patient)
-        loading @(rf/subscribe [:loading])
         patient-loading (-> loading :patient (get patient-id) boolean)]
     ^{:key (:cmi_number patient)}
-    [:tr {:aria-busy patient-loading}
+    [:tr
      [:td (:id patient)]
      [:td (:cmi_number patient)]
      [:td (:full_name patient)]
-     [:td
+     [:td {:aria-busy patient-loading}
       [:a {:href (str "/patients/" (:id patient)) :role "button"} "Details"]
       [:a {:href (str "/patients/" (:id patient) "/edit") :role "button"} "Edit"]
       [:button.secondary {:on-click #(rf/dispatch [:delete-patient patient-id])} "Delete"]]]))
@@ -71,7 +70,7 @@
 (defn list-page []
   [:div
    [:h2 "Patients"]
-   [:a {:href "/create-patient" :role "button"} "Create new patient"]
+   [:a {:href "/patients/create" :role "button"} "Create new patient"]
    (let [loading @(rf/subscribe [:loading])
          patients @(rf/subscribe [:patients])]
      (cond
@@ -85,7 +84,8 @@
                 [:th "Full name"]
                 [:th "Actions"]]]
               [:tbody
-                (map patient-list-entry patients)]]))])
+                (for [patient patients]
+                  (patient-list-entry patient loading))]]))])
 
 (defn view-page []
   [:div
@@ -108,17 +108,21 @@
               (patient-field "Birth date" (-> patient :birth_date format-birth-date))
               (patient-field "Address" (:address patient))]))])
 
-(defn edit-page []
+(defn form-page []
   (let [patient @(rf/subscribe [:patient])
         loading @(rf/subscribe [:loading])
+        is-new-patient (nil? (:id patient))
         edit-field (partial dispatch-field-edited :edit-patient-field)
-        edit-patient (fn [event]
-                       (.preventDefault event)
-                       (rf/dispatch [:edit-patient patient]))]
+        upsert-patient (fn [event]
+                         (.preventDefault event)
+                         (rf/dispatch [:upsert-patient patient]))]
     (cond
       (:patient loading) [:div "Loading..."]
-      :else [:form {:on-submit edit-patient}
-             [:h2 (str "Patient #" (:id patient))]
+      :else [:form {:on-submit upsert-patient}
+             [:h2
+              (if is-new-patient
+                "New patient"
+                (str "Patient #" (:id patient)))]
              [:div.form-errors]
              [:div.grid
               [patient-edit-field
@@ -161,4 +165,4 @@
                          :default-value (:cmi_number patient)
                          :on-change (edit-field :cmi_number)}]]]
 
-             [:button {:type "submit"} "Save"]])))
+             [:button {:type "submit"} (if is-new-patient "Create" "Save")]])))

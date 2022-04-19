@@ -3,5 +3,5 @@
 (def default-db {:active-page :home
                  :loading {}
                  :patients []
-                 :patient {}
+                 :patient {:sex "not-known"}
                  :flash []})

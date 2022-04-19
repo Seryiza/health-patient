@@ -8,6 +8,7 @@
 (def routes
   {:. :home
    "patients" {:. :patients-list
+               "create" :patient-create
                [:id] {:. :patient-view
                       "edit" :patient-edit}}})
 
@@ -16,7 +17,8 @@
     :home [index/index-page]
     :patients-list [patients/list-page]
     :patient-view [patients/view-page]
-    :patient-edit [patients/edit-page]
+    :patient-edit [patients/form-page]
+    :patient-create [patients/form-page]
     [index/index-page]))
 
 (def history

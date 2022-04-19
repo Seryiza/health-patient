@@ -47,7 +47,7 @@
     (if (empty? form-errors)
       (do
         (patients/update-patient-by-id @db patient-data-with-id)
-        (response/response {:message "Patient updated."}))
+        (response/response {:id patient-id}))
       (response/bad-request {:form-errors form-errors}))))
 
 (defn create-patient [request]
@@ -55,7 +55,7 @@
         [form-errors patient-data] (st/validate form-data schemes/+patient-scheme+)]
     (if (empty? form-errors)
       (let [inserted-data (patients/insert-patient @db patient-data)
-            patiend-id (:id inserted-data)
-            patient-url (str "/patients/" patiend-id)]
-        (response/created patient-url {:id patiend-id}))
+            patient-id (:id inserted-data)
+            patient-url (str "/patients/" patient-id)]
+        (response/created patient-url {:id patient-id}))
       (response/bad-request {:form-errors form-errors}))))

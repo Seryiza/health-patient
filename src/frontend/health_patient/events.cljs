@@ -59,8 +59,8 @@
                   :uri (str "/api/patients/" patient-id)
                   :format (ajax/json-request-format)
                   :response-format (ajax/json-response-format {:keywords? true})
-                  :on-success [:delete-patient-success]
-                  :on-failure [:delete-patient-failure]}}))
+                  :on-success [:delete-patient-success patient-id]
+                  :on-failure [:delete-patient-failure patient-id]}}))
 
 (rf/reg-event-db
   :delete-patient-success
@@ -98,24 +98,27 @@
     (assoc db :flash ["Can't load this patient from server."])))
 
 (rf/reg-event-fx
-  :edit-patient
+  :upsert-patient
   (fn [{:keys [db]} [_ {:keys [id] :as patient-data}]]
-    {:db (assoc db :flash [])
-     :http-xhrio {:method :put
-                  :uri (str "/api/patients/" id)
-                  :params patient-data
-                  :format (ajax/json-request-format)
-                  :response-format (ajax/json-response-format {:keywords? true})
-                  :on-success [:edit-patient-success id]
-                  :on-failure [:edit-patient-failure id]}}))
+    (let [new? (nil? id)]
+      {:db (assoc db :flash [])
+       :http-xhrio {:method (if new? :post :put)
+                    :uri    (if new?
+                              "/api/patients"
+                              (str "/api/patients/" id))
+                    :params patient-data
+                    :format (ajax/json-request-format)
+                    :response-format (ajax/json-response-format {:keywords? true})
+                    :on-success [:upsert-patient-success]
+                    :on-failure [:upsert-patient-failure]}})))
 
 (rf/reg-event-fx
-  :edit-patient-success
-  (fn [_ [_ id]]
+  :upsert-patient-success
+  (fn [_ [_ {:keys [id]}]]
     {:set-url {:url (str "/patients/" id)}}))
 
 (rf/reg-event-db
-  :edit-patient-failure
+  :upsert-patient-failure
   (fn [db _]
     (assoc db :flash ["Can't edit patient on server."])))
 

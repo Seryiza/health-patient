@@ -5,7 +5,8 @@
   (let [flash @(rf/subscribe [:flash])]
     (when-not (empty? flash)
       [:header
-       (for [msg flash] [:div [:mark [:strong msg]]])])))
+       (for [msg flash]
+         ^{:key msg} [:div [:mark [:strong msg]]])])))
 
 (defn page [content]
   [:div
