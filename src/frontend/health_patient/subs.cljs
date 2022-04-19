@@ -20,3 +20,8 @@
   :flash
   (fn [db _]
     (:flash db)))
+
+(rf/reg-sub
+  :patient
+  (fn [db _]
+    (:patient db)))

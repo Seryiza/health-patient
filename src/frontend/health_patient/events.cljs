@@ -9,10 +9,11 @@
 
 (rf/reg-event-fx
   :set-active-page
-  (fn [{:keys [db]} [_ {:keys [page]}]]
+  (fn [{:keys [db]} [_ {:keys [page path-params]}]]
     {:db (assoc db :active-page page)
      :fx (case page
            :patients-list [[:dispatch [:get-patients]]]
+           :patient-view [[:dispatch [:get-patient (:id path-params)]]]
            [])}))
 
 (rf/reg-event-fx
@@ -52,8 +53,8 @@
                   :uri (str "/api/patients/" patient-id)
                   :format (ajax/json-request-format)
                   :response-format (ajax/json-response-format {:keywords? true})
-                  :on-success [:delete-patient-success patient-id]
-                  :on-failure [:delete-patient-failure patient-id]}}))
+                  :on-success [:delete-patient-success]
+                  :on-failure [:delete-patient-failure]}}))
 
 (rf/reg-event-db
   :delete-patient-success
@@ -68,3 +69,24 @@
     (-> db
         (assoc-in [:loading :patient patient-id] false)
         (assoc :flash ["Can't delete patient from server."]))))
+
+(rf/reg-event-fx
+  :get-patient
+  (fn [{:keys [db]} [_ patient-id]]
+    {:db (assoc db :flash [])
+     :http-xhrio {:method :get
+                  :uri (str "/api/patients/" patient-id)
+                  :format (ajax/json-request-format)
+                  :response-format (ajax/json-response-format {:keywords? true})
+                  :on-success [:get-patient-success]
+                  :on-failure [:get-patient-failure]}}))
+
+(rf/reg-event-db
+  :get-patient-success
+  (fn [db [_ patient-data]]
+    (assoc db :patient patient-data)))
+
+(rf/reg-event-db
+  :get-patient-failure
+  (fn [db _]
+    (assoc db :flash ["Can't load this patient from server."])))

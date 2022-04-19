@@ -14,5 +14,5 @@
     [:ul [:li [:a {:href "/patients"} "All patients"]]]]
    [:section.container
     [:article
-     flash-messages
+     [flash-messages]
      content]]])

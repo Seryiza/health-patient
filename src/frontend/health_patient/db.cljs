@@ -3,4 +3,5 @@
 (def default-db {:active-page :home
                  :loading {}
                  :patients []
+                 :patient {}
                  :flash []})

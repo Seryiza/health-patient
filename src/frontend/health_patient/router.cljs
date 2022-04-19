@@ -7,17 +7,22 @@
 
 (def routes
   {:. :home
-   "patients" :patients-list})
+   "patients" {:. :patients-list
+               [:id] {:. :patient-view
+                      "edit" :patient-edit}}})
 
 (defn get-page [page-name]
   (case page-name
     :home [index/index-page]
     :patients-list [patients/list-page]
+    :patient-view [patients/view-page]
+    :patient-edit [patients/edit-page]
     [index/index-page]))
 
 (def history
   (pushy/pushy
-    #(rf/dispatch [:set-active-page {:page (:match %)}])
+    #(rf/dispatch [:set-active-page {:page (:match %)
+                                     :path-params (:params %)}])
     #(rm/match % routes)))
 
 (defn start! []

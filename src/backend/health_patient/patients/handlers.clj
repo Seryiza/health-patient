@@ -23,7 +23,8 @@
       (response/not-found
         {:message "Patient not found."})
       (response/response
-        {:first_name (:first_name patient)
+        {:id (:id patient)
+         :first_name (:first_name patient)
          :middle_name (:middle_name patient)
          :last_name (:last_name patient)
          :sex (:sex patient)
