@@ -1,7 +1,13 @@
 (ns health-patient.events
   (:require [re-frame.core :as rf]
             [ajax.core :as ajax]
-            [health-patient.db :as db]))
+            [health-patient.db :as db]
+            [health-patient.router :as router]))
+
+(rf/reg-fx
+ :set-url
+ (fn [{:keys [url]}]
+   (router/set-token! url)))
 
 (rf/reg-event-db
   :initialize-db
@@ -13,7 +19,7 @@
     {:db (assoc db :active-page page)
      :fx (case page
            :patients-list [[:dispatch [:get-patients]]]
-           :patient-view [[:dispatch [:get-patient (:id path-params)]]]
+           (:patient-view :patient-edit) [[:dispatch [:get-patient (:id path-params)]]]
            [])}))
 
 (rf/reg-event-fx
@@ -90,3 +96,30 @@
   :get-patient-failure
   (fn [db _]
     (assoc db :flash ["Can't load this patient from server."])))
+
+(rf/reg-event-fx
+  :edit-patient
+  (fn [{:keys [db]} [_ {:keys [id] :as patient-data}]]
+    {:db (assoc db :flash [])
+     :http-xhrio {:method :put
+                  :uri (str "/api/patients/" id)
+                  :params patient-data
+                  :format (ajax/json-request-format)
+                  :response-format (ajax/json-response-format {:keywords? true})
+                  :on-success [:edit-patient-success id]
+                  :on-failure [:edit-patient-failure id]}}))
+
+(rf/reg-event-fx
+  :edit-patient-success
+  (fn [_ [_ id]]
+    {:set-url {:url (str "/patients/" id)}}))
+
+(rf/reg-event-db
+  :edit-patient-failure
+  (fn [db _]
+    (assoc db :flash ["Can't edit patient on server."])))
+
+(rf/reg-event-db
+  :edit-patient-field
+  (fn [db [_ field value]]
+    (assoc-in db [:patient field] value)))

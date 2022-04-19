@@ -25,5 +25,8 @@
                                      :path-params (:params %)}])
     #(rm/match % routes)))
 
+(defn set-token! [url]
+  (pushy/set-token! history url))
+
 (defn start! []
   (pushy/start! history))
