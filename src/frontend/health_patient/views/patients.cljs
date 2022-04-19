@@ -2,15 +2,18 @@
   (:require [re-frame.core :as rf]))
 
 (defn patient-entry [patient]
-  ^{:key (:cmi_number patient)}
-  [:tr {:data-patient-id (:id patient)}
-   [:td (:id patient)]
-   [:td (:cmi_number patient)]
-   [:td (:full_name patient)]
-   [:td
-    [:a {:href (str "/patients/" (:id patient)) :role "button"} "Details"]
-    [:a {:href (str "/patients/" (:id patient) "/edit") :role "button"} "Edit"]
-    [:button.secondary "TODO Delete"]]])
+  (let [patient-id (:id patient)
+        loading @(rf/subscribe [:loading])
+        patient-loading (-> loading :patient (get patient-id) boolean)]
+    ^{:key (:cmi_number patient)}
+    [:tr {:aria-busy patient-loading}
+     [:td (:id patient)]
+     [:td (:cmi_number patient)]
+     [:td (:full_name patient)]
+     [:td
+      [:a {:href (str "/patients/" (:id patient)) :role "button"} "Details"]
+      [:a {:href (str "/patients/" (:id patient) "/edit") :role "button"} "Edit"]
+      [:button.secondary {:on-click #(rf/dispatch [:delete-patient patient-id])} "Delete"]]]))
 
 (defn list-page []
   [:div

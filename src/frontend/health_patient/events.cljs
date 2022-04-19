@@ -18,7 +18,9 @@
 (rf/reg-event-fx
   :get-patients
   (fn [{:keys [db]} _]
-    {:db (assoc-in db [:loading :patients] true)
+    {:db (-> db
+             (assoc :flash [])
+             (assoc-in [:loading :patients] true))
      :http-xhrio {:method :get
                   :uri "/api/patients"
                   :format (ajax/json-request-format)
@@ -31,7 +33,6 @@
   (fn [db [_ {:keys [patients]}]]
     (-> db
         (assoc-in [:loading :patients] false)
-        (assoc :flash [])
         (assoc :patients patients))))
 
 (rf/reg-event-db
@@ -40,3 +41,30 @@
     (-> db
         (assoc :flash ["Can't load patients list from server."])
         (assoc-in [:loading :patients] false))))
+
+(rf/reg-event-fx
+  :delete-patient
+  (fn [{:keys [db]} [_ patient-id]]
+    {:db (-> db
+             (assoc :flash [])
+             (assoc-in [:loading :patient patient-id] true))
+     :http-xhrio {:method :delete
+                  :uri (str "/api/patients/" patient-id)
+                  :format (ajax/json-request-format)
+                  :response-format (ajax/json-response-format {:keywords? true})
+                  :on-success [:delete-patient-success patient-id]
+                  :on-failure [:delete-patient-failure patient-id]}}))
+
+(rf/reg-event-db
+  :delete-patient-success
+  (fn [db [_ patient-id]]
+    (-> db
+        (assoc-in [:loading :patient patient-id] false)
+        (update :patients (fn [patients] (filter #(not= (:id %) patient-id) patients))))))
+
+(rf/reg-event-db
+  :delete-patient-failure
+  (fn [db [_ patient-id]]
+    (-> db
+        (assoc-in [:loading :patient patient-id] false)
+        (assoc :flash ["Can't delete patient from server."]))))
