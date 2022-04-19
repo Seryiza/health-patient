@@ -15,7 +15,6 @@
 
 (def routes
   {:GET #'show-reactive-page
-   [:default] {:GET #'show-reactive-page}
    "api" {"patients" {:GET #'patients/show-all-patients
                       :POST #'patients/create-patient
                       [:patient-id] {:GET #'patients/show-patient
@@ -25,7 +24,7 @@
 (defn handler [{:keys [uri request-method] :as request}]
   (if-let [found-route (rm/match [request-method uri] routes)]
     ((:match found-route) (update-in request [:path-params] merge (:params found-route)))
-    {:status 404 :body "Not found"}))
+    (show-reactive-page request)))
 
 (def app
   (atom
