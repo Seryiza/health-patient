@@ -17,8 +17,7 @@
     :home [index/index-page]
     :patients-list [patients/list-page]
     :patient-view [patients/view-page]
-    :patient-edit [patients/form-page]
-    :patient-create [patients/form-page]
+    (:patient-create :patient-edit) [patients/form-page]
     [index/index-page]))
 
 (def history

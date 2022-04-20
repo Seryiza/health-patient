@@ -3,18 +3,13 @@
             [reagent.core :as r]
             [clojure.string :as str]))
 
-(defn patient-full-name [patient]
-  (str
-    (:first_name patient)
-    " "
-    (:middle_name patient)
-    " "
-    (:last_name patient)))
-
 (def shown-sex-labels [["Not known" "not-known"]
                        ["Male" "male"]
                        ["Female" "female"]
                        ["Not applicable" "not-applicable"]])
+
+(defn patient-full-name [patient]
+  (str (:first_name patient) " " (:middle_name patient) " " (:last_name patient)))
 
 (defn format-birth-date [birth-date]
   (let [date (js/Date. birth-date)]
@@ -104,13 +99,13 @@
                [:h3 (patient-full-name patient)]]
               [:section
                [:a {:href (str "/patients/" (:id patient) "/edit") :role "button"} "Edit current patient"]]
-              (patient-field "First name" (:first_name patient))
-              (patient-field "Middle name" (:middle_name patient))
-              (patient-field "Last name" (:last_name patient))
-              (patient-field "CMI number" (:cmi_number patient))
-              (patient-field "Sex" (:sex patient))
-              (patient-field "Birth date" (-> patient :birth_date format-birth-date))
-              (patient-field "Address" (:address patient))]))])
+              [patient-field "First name" (:first_name patient)]
+              [patient-field "Middle name" (:middle_name patient)]
+              [patient-field "Last name" (:last_name patient)]
+              [patient-field "CMI number" (:cmi_number patient)]
+              [patient-field "Sex" (:sex patient)]
+              [patient-field "Birth date" (-> patient :birth_date format-birth-date)]
+              [patient-field "Address" (:address patient)]]))])
 
 (defn form-page []
   (let [patient @(rf/subscribe [:patient])
