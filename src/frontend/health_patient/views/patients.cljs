@@ -41,7 +41,7 @@
 (defn patient-list-entry [patient loading]
   (let [patient-id (:id patient)
         patient-loading (-> loading :patient (get patient-id) boolean)]
-    ^{:key (:cmi_number patient)}
+    ^{:key patient-id}
     [:tr
      [:td (:id patient)]
      [:td (:cmi_number patient)]

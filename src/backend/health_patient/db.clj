@@ -26,7 +26,7 @@
   ([db statement]
    (honey-execute-one! db statement default-jdbc-opts))
   ([db statement opts]
-   (jdbc/execute-one! db (sql/format statement) opts)))
+   (jdbc/execute-one! db (sql/format statement) (merge default-jdbc-opts opts))))
 
 (defn honey-update! [db statement & [opts]]
   (:next.jdbc/update-count (honey-execute-one! db statement opts)))
