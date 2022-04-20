@@ -46,8 +46,8 @@
   :get-patients-failure
   (fn [db _]
     (-> db
-        (assoc :flash ["Can't load patients list from server."])
-        (assoc-in [:loading :patients] false))))
+        (assoc-in [:loading :patients] false)
+        (assoc :flash ["Can't load patients list from server."]))))
 
 (rf/reg-event-fx
   :delete-patient
@@ -79,23 +79,29 @@
 (rf/reg-event-fx
   :get-patient
   (fn [{:keys [db]} [_ patient-id]]
-    {:db (assoc db :flash [])
+    {:db (-> db
+             (assoc :flash [])
+             (assoc-in [:loading :patient patient-id] true))
      :http-xhrio {:method :get
                   :uri (str "/api/patients/" patient-id)
                   :format (ajax/json-request-format)
                   :response-format (ajax/json-response-format {:keywords? true})
-                  :on-success [:get-patient-success]
-                  :on-failure [:get-patient-failure]}}))
+                  :on-success [:get-patient-success patient-id]
+                  :on-failure [:get-patient-failure patient-id]}}))
 
 (rf/reg-event-db
   :get-patient-success
-  (fn [db [_ patient-data]]
-    (assoc db :patient patient-data)))
+  (fn [db [_ patient-id patient-data]]
+    (-> db
+        (assoc-in [:loading :patient patient-id] false)
+        (assoc :patient patient-data))))
 
 (rf/reg-event-db
   :get-patient-failure
-  (fn [db _]
-    (assoc db :flash ["Can't load this patient from server."])))
+  (fn [db [_ patient-id]]
+    (-> db
+        (assoc-in [:loading :patient patient-id] false)
+        (assoc :flash ["Can't load this patient from server."]))))
 
 (rf/reg-event-fx
   :upsert-patient
@@ -110,7 +116,7 @@
                     :format (ajax/json-request-format)
                     :response-format (ajax/json-response-format {:keywords? true})
                     :on-success [:upsert-patient-success]
-                    :on-failure [:upsert-patient-failure]}})))
+                    :on-failure [:upsert-patient-failure new?]}})))
 
 (rf/reg-event-fx
   :upsert-patient-success
@@ -119,8 +125,10 @@
 
 (rf/reg-event-db
   :upsert-patient-failure
-  (fn [db _]
-    (assoc db :flash ["Can't edit patient on server."])))
+  (fn [db [_ new? {:keys [response]}]]
+    (-> db
+        (assoc :form-errors (:form-errors response))
+        (assoc :flash (if new? ["Can't create patient on server."] ["Can't edit patient on server."])))))
 
 (rf/reg-event-db
   :edit-patient-field
