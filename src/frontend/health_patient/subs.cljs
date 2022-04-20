@@ -7,3 +7,4 @@
 (rf/reg-sub :loading (fn [db _] (:loading db)))
 (rf/reg-sub :flash (fn [db _] (:flash db)))
 (rf/reg-sub :form-errors (fn [db _] (:form-errors db)))
+(rf/reg-sub :search-query (fn [db _] (:search-query db)))

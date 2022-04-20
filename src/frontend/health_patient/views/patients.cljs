@@ -1,6 +1,5 @@
 (ns health-patient.views.patients
   (:require [re-frame.core :as rf]
-            [reagent.core :as r]
             [clojure.string :as str]))
 
 (def shown-sex-labels [["Not known" "not-known"]
@@ -66,11 +65,19 @@
       [:small [:b error-text]])]])
 
 (defn list-page []
-  [:div
-   [:h2 "Patients"]
-   [:a {:href "/patients/create" :role "button"} "Create new patient"]
-   (let [loading @(rf/subscribe [:loading])
-         patients @(rf/subscribe [:patients])]
+  (let [loading @(rf/subscribe [:loading])
+        patients @(rf/subscribe [:patients])
+        search-query @(rf/subscribe [:search-query])]
+    [:div
+     [:h2 "Patients"]
+     [:label
+      "Search patient by name"
+      [:input {:type "text"
+               :on-change #(rf/dispatch [:set-search-query (-> % .-target .-value)])}]]
+     [:button {:type "button"
+               :on-click #(rf/dispatch [:get-patients {:search-query search-query}])}
+      "Search"]
+     [:a {:href "/patients/create" :role "button"} "Create new patient"]
      (cond
        (:patients loading) [:div "Loading..."]
        (empty? patients) [:div "No patients yet."]
@@ -83,7 +90,7 @@
                 [:th "Actions"]]]
               [:tbody
                 (for [patient patients]
-                  (patient-list-entry patient loading))]]))])
+                  (patient-list-entry patient loading))]])]))
 
 (defn view-page []
   [:div

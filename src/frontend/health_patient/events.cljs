@@ -24,12 +24,13 @@
 
 (rf/reg-event-fx
   :get-patients
-  (fn [{:keys [db]} _]
+  (fn [{:keys [db]} [_ {:keys [search-query]}]]
     {:db (-> db
              (assoc :flash [])
              (assoc-in [:loading :patients] true))
      :http-xhrio {:method :get
                   :uri "/api/patients"
+                  :params {:search-name (or search-query "")}
                   :format (ajax/json-request-format)
                   :response-format (ajax/json-response-format {:keywords? true})
                   :on-success [:get-patients-success]
@@ -134,3 +135,8 @@
   :edit-patient-field
   (fn [db [_ field value]]
     (assoc-in db [:patient field] value)))
+
+(rf/reg-event-db
+  :set-search-query
+  (fn [db [_ search-query]]
+    (assoc db :search-query search-query)))
