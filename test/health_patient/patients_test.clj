@@ -23,7 +23,7 @@
     (test-utils/insert-test-records :patients
                                     generate-patient
                                     [{:first_name "Sergey"} {:first_name "Uniqueman"}])
-    (let [response (app/handler (test-utils/json-request :get "/patients"))]
+    (let [response (app/handler (test-utils/json-request :get "/api/patients"))]
       (m/assert
         {:status 200
          :body {:patients [{:full_name #(str/includes? % "Sergey")}
@@ -36,7 +36,7 @@
     (test-utils/insert-test-records :patients
                                     generate-patient
                                     [{:id 1 :first_name "Sergey" :last_name "Zaborovsky"}])
-    (let [response (app/handler (test-utils/json-request :get "/patients/1"))]
+    (let [response (app/handler (test-utils/json-request :get "/api/patients/1"))]
       (m/assert
         {:status 200
          :body {:first_name "Sergey"
@@ -44,7 +44,7 @@
         response)))
 
   (testing "Don't show non-existing patient"
-    (let [response (app/handler (test-utils/json-request :get "/patients/2"))]
+    (let [response (app/handler (test-utils/json-request :get "/api/patients/2"))]
       (m/assert {:status 404} response))))
 
 (deftest delete-patient-test
@@ -52,13 +52,13 @@
     (test-utils/insert-test-records :patients
                                     generate-patient
                                     [{:id 1 :first_name "Sergey"}])
-    (let [response (app/handler (test-utils/json-request :delete "/patients/1"))]
+    (let [response (app/handler (test-utils/json-request :delete "/api/patients/1"))]
       (m/assert {:status 200} response))
-    (let [response (app/handler (test-utils/json-request :delete "/patients/1"))]
+    (let [response (app/handler (test-utils/json-request :delete "/api/patients/1"))]
       (m/assert {:status 404} response)))
 
   (testing "Delete non-existing patient"
-    (let [response (app/handler (test-utils/json-request :delete "/patients/2"))]
+    (let [response (app/handler (test-utils/json-request :delete "/api/patients/2"))]
       (m/assert {:status 404} response))))
 
 (deftest update-patient-test
@@ -67,22 +67,22 @@
                                     generate-patient
                                     [{:id 1, :first_name "Not-Sergey"}])
     (let [updated-patient-data (test-utils/make-test-record generate-patient {:first_name "Updated-Sergey"})
-          response (app/handler (test-utils/json-request :put "/patients/1" :json updated-patient-data))]
+          response (app/handler (test-utils/json-request :put "/api/patients/1" :json updated-patient-data))]
       (m/assert {:status 200} response))
-    (let [response (app/handler (test-utils/json-request :get "/patients/1"))]
+    (let [response (app/handler (test-utils/json-request :get "/api/patients/1"))]
       (m/assert {:status 200 :body {:first_name "Updated-Sergey"}} response))))
 
 (deftest insert-patient-test
   (testing "Insert new patient"
     (let [patient-data (generate-patient)
-          response (app/handler (test-utils/json-request :post "/patients" :json patient-data))]
+          response (app/handler (test-utils/json-request :post "/api/patients" :json patient-data))]
       (m/assert {:status 201} response))))
 
 (deftest search-patient-test
   (testing "Search patients by name"
     (test-utils/insert-test-records :patients generate-patient [{:first_name "Sergey"}
                                                                 {:first_name "Ivan"}])
-    (let [response (app/handler (test-utils/json-request :get "/patients" :query {:search-name "Ser"}))]
+    (let [response (app/handler (test-utils/json-request :get "/api/patients" :query {:search-name "Ser"}))]
       (m/assert
         {:status 200
          :body {:patients [{:full_name #(str/includes? % "Sergey")}]}}

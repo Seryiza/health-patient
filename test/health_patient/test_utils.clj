@@ -1,7 +1,6 @@
 (ns health-patient.test-utils
   (:require [next.jdbc :as jdbc]
             [next.jdbc.sql :as sql]
-            [net.cgrand.enlive-html :as enlive]
             [clojure.test :as test]
             [clojure.string :as str]
             [health-patient.app :as app]
@@ -38,14 +37,3 @@
 (defn insert-test-records [table generator needed-records-data]
   (doseq [record (map #(make-test-record generator %) needed-records-data)]
     (sql/insert! @db/db table record)))
-
-(defn parse-html [response]
-  (enlive/html-resource (StringReader. (:body response))))
-
-(defn html-has-text? [html selector checking-text]
-  (let [node-texts (map enlive/text (enlive/select html selector))]
-    (test/is (some #(str/includes? % checking-text) node-texts)
-             (str "Text " checking-text " not found"))))
-
-(defn http-status? [response status]
-  (test/is (= status (:status response))))
