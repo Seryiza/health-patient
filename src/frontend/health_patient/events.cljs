@@ -81,26 +81,26 @@
   (fn [{:keys [db]} [_ patient-id]]
     {:db (-> db
              (assoc :flash [])
-             (assoc-in [:loading :patient patient-id] true))
+             (assoc-in [:loading :patient] true))
      :http-xhrio {:method :get
                   :uri (str "/api/patients/" patient-id)
                   :format (ajax/json-request-format)
                   :response-format (ajax/json-response-format {:keywords? true})
-                  :on-success [:get-patient-success patient-id]
-                  :on-failure [:get-patient-failure patient-id]}}))
+                  :on-success [:get-patient-success]
+                  :on-failure [:get-patient-failure]}}))
 
 (rf/reg-event-db
   :get-patient-success
-  (fn [db [_ patient-id patient-data]]
+  (fn [db [_ patient-data]]
     (-> db
-        (assoc-in [:loading :patient patient-id] false)
+        (assoc-in [:loading :patient] false)
         (assoc :patient patient-data))))
 
 (rf/reg-event-db
   :get-patient-failure
-  (fn [db [_ patient-id]]
+  (fn [db _]
     (-> db
-        (assoc-in [:loading :patient patient-id] false)
+        (assoc-in [:loading :patient] false)
         (assoc :flash ["Can't load this patient from server."]))))
 
 (rf/reg-event-fx

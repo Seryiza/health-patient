@@ -96,7 +96,7 @@
          patient @(rf/subscribe [:patient])
          patient-id (:id patient)]
      (cond
-       (get-in loading [:patient patient-id]) [:p "Loading..."]
+       (:patient loading) [:p "Loading..."]
        (empty? patient) [:p "This patient isn't found."]
        :else [:div
               [:hgroup

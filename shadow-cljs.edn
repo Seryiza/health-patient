@@ -6,6 +6,8 @@
                 [kibu/pushy "0.3.8"]
                 [day8.re-frame/http-fx "0.2.4"]
                 [cljs-ajax "0.8.4"]
+                [funcool/struct "1.4.0"]
+                [funcool/cuerdas "2022.03.27-397"]
                 [cider/cider-nrepl "0.24.0"]]
  :builds {:app {:target :browser
                 :output-dir "resources/public/js"
