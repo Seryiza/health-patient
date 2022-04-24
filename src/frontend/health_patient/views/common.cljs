@@ -17,3 +17,8 @@
     [:article
      [flash-messages]
      content]]])
+
+(defn not-found-page []
+  [:div
+   [:h1 "Not found"]
+   [:p "Whoops, this page doesn't exist."]])

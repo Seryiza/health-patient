@@ -3,7 +3,8 @@
             [pushy.core :as pushy]
             [re-frame.core :as rf]
             [health-patient.views.index :as index]
-            [health-patient.views.patients :as patients]))
+            [health-patient.views.patients :as patients]
+            [health-patient.views.common :as common]))
 
 (def routes
   {:. :home
@@ -18,13 +19,13 @@
     :patients-list [patients/list-page]
     :patient-view [patients/view-page]
     (:patient-create :patient-edit) [patients/form-page]
-    [index/index-page]))
+    [common/not-found-page]))
 
 (def history
   (pushy/pushy
     #(rf/dispatch [:set-active-page {:page (:match %)
                                      :path-params (:params %)}])
-    #(rm/match % routes)))
+    #(or (rm/match % routes) :not-found)))
 
 (defn set-token! [url]
   (pushy/set-token! history url))
