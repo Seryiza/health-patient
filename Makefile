@@ -1,4 +1,6 @@
+.EXPORT_ALL_VARIABLES:
 .PHONY: test
+include .env
 
 prepare-and-run-jar: install migrate frontend compile-jar start-jar
 
