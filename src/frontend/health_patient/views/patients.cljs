@@ -1,6 +1,8 @@
 (ns health-patient.views.patients
   (:require [re-frame.core :as rf]
-            [clojure.string :as str]))
+            [clojure.string :as str]
+            [health-patient.components.table :as table]
+            [health-patient.components.common :as common]))
 
 (def shown-sex-labels [["Not known" "not-known"]
                        ["Male" "male"]
@@ -38,18 +40,17 @@
           value (if transform-fn (transform-fn value) value)]
       (rf/dispatch [dispatch-id field value]))))
 
-(defn patient-list-entry [patient loading]
-  (let [patient-id (:id patient)
-        patient-loading (-> loading :patient (get patient-id) boolean)]
+(defn patient-list-entry [patient]
+  (let [patient-id (:id patient)]
     ^{:key patient-id}
-    [:tr
-     [:td (:id patient)]
-     [:td (:cmi_number patient)]
-     [:td (:full_name patient)]
-     [:td {:aria-busy patient-loading}
-      [:a {:href (str "/patients/" (:id patient)) :role "button"} "Details"]
-      [:a {:href (str "/patients/" (:id patient) "/edit") :role "button"} "Edit"]
-      [:button.secondary {:on-click #(rf/dispatch [:delete-patient patient-id])} "Delete"]]]))
+    [table/row
+     [table/column (:id patient)]
+     [table/column (:cmi_number patient)]
+     [table/column (:full_name patient)]
+     [table/column
+      [common/link-button (str "/patients/" (:id patient)) "Details"]
+      [common/link-button (str "/patients/" (:id patient) "/edit") "Edit"]
+      [common/button {:on-click #(rf/dispatch [:delete-patient patient-id])} "Delete"]]]))
 
 (defn patient-field [label value]
   [:p
@@ -69,28 +70,29 @@
         patients @(rf/subscribe [:patients])
         search-query @(rf/subscribe [:search-query])]
     [:div
-     [:h2 "Patients"]
-     [:label
+     [common/h2 "Patients"]
+     [common/label
       "Search patient by name"
-      [:input {:type "text"
-               :on-change #(rf/dispatch [:set-search-query (-> % .-target .-value)])}]]
-     [:button {:type "button"
-               :on-click #(rf/dispatch [:get-patients {:search-query search-query}])}
+      [common/input {:type "text"
+                     :on-change #(rf/dispatch [:set-search-query (-> % .-target .-value)])}]]
+     [common/button {:type "button"
+                     :on-click #(rf/dispatch [:get-patients {:search-query search-query}])}
       "Search"]
-     [:a {:href "/patients/create" :role "button"} "Create new patient"]
+     [common/link-button
+      "/patients/create"
+      "Create new patient"]
      (cond
        (:patients loading) [:div "Loading..."]
        (empty? patients) [:div "No patients yet."]
-       :else [:table {:role "grid"}
-              [:thead
-               [:tr
-                [:th "ID"]
-                [:th "CMI number"]
-                [:th "Full name"]
-                [:th "Actions"]]]
-              [:tbody
+       :else [table/table
+              [table/header
+               [table/header-column "ID"]
+               [table/header-column "CMI number"]
+               [table/header-column "Full name"]
+               [table/header-column "Actions"]]
+              [table/body
                 (for [patient patients]
-                  (patient-list-entry patient loading))]])]))
+                  (patient-list-entry patient))]])]))
 
 (defn view-page []
   [:div
@@ -101,11 +103,9 @@
        (:patient loading) [:p "Loading..."]
        (empty? patient) [:p "This patient isn't found."]
        :else [:div
-              [:hgroup
-               [:h2 (str "Patient #" patient-id)]
-               [:h3 (patient-full-name patient)]]
+              [common/h2 (str "Patient #" patient-id ": " (patient-full-name patient))]
               [:section
-               [:a {:href (str "/patients/" (:id patient) "/edit") :role "button"} "Edit current patient"]]
+               [common/link-button (str "/patients/" (:id patient) "/edit") "Edit current patient"]]
               [patient-field "First name" (:first_name patient)]
               [patient-field "Middle name" (:middle_name patient)]
               [patient-field "Last name" (:last_name patient)]
@@ -126,7 +126,7 @@
     (cond
       (:patient loading) [:div "Loading..."]
       :else [:form {:on-submit upsert-patient}
-             [:h2
+             [common/h2
               (if is-new-patient
                 "New patient"
                 (str "Patient #" (:id patient)))]
@@ -134,49 +134,49 @@
              [:div.grid
               [patient-edit-field
                 "First name"
-                [:input {:type "text"
+                [common/input {:type "text"
                          :default-value (:first_name patient)
                          :on-change (edit-field :first_name)}]
                 (:first_name form-errors)]
               [patient-edit-field
                 "Middle name"
-                [:input {:type "text"
+                [common/input {:type "text"
                          :default-value (:middle_name patient)
                          :on-change (edit-field :middle_name)}]
                 (:middle_name form-errors)]
               [patient-edit-field
                 "Last name"
-                [:input {:type "text"
+                [common/input {:type "text"
                          :default-value (:last_name patient)
                          :on-change (edit-field :last_name)}]
                 (:last_name form-errors)]]
              [:div.grid
               [patient-edit-field
                "Sex"
-               [:select {:default-value (:sex patient)
-                         :on-change (edit-field :sex)}
+               [common/select {:default-value (:sex patient)
+                               :on-change (edit-field :sex)}
                 (for [[label value] shown-sex-labels]
-                  ^{:key value} [:option {:value value} label])]
+                  ^{:key value} [common/option {:value value} label])]
                (:sex form-errors)]
               [patient-edit-field
                 "Birth date"
-                [:input {:type "date"
+                [common/input {:type "date"
                          :default-value (-> patient :birth_date format-html-input-date)
                          :on-change (edit-field :birth_date date->iso)}]
                 (:birth_date form-errors)]]
              [:div.grid
               [patient-edit-field
                 "Address"
-                [:input {:type "text"
+                [common/input {:type "text"
                          :default-value (:address patient)
                          :on-change (edit-field :address)}]
                 (:address form-errors)]]
             [:div.grid
               [patient-edit-field
                 "CMI number"
-                [:input {:type "text"
+                [common/input {:type "text"
                          :default-value (:cmi_number patient)
                          :on-change (edit-field :cmi_number)}]
                 (:cmi_number form-errors)]]
 
-             [:button {:type "submit"} (if is-new-patient "Create" "Save")]])))
+             [common/button {:type "submit"} (if is-new-patient "Create" "Save")]])))

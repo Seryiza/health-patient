@@ -1,6 +1,7 @@
-(ns health-patient.views.index)
+(ns health-patient.views.index
+  (:require [health-patient.components.common :as common]))
 
 (defn index-page []
   [:div
-   [:h2 "Hello!"]
-   [:p "It's a web app to manipulate patients. See " [:a {:href "/patients"} "list of patients"]]])
+   [common/h2 "Hello!"]
+   [:p "It's a web app to manipulate patients. See " [common/link "/patients" "list of patients"]]])

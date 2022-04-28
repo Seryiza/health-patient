@@ -1,5 +1,6 @@
 (ns health-patient.views.common
-  (:require [re-frame.core :as rf]))
+  (:require [re-frame.core :as rf]
+            [health-patient.components.common :as common]))
 
 (defn flash-messages []
   (let [flash @(rf/subscribe [:flash])]
@@ -10,11 +11,12 @@
 
 (defn page [content]
   [:div
-   [:nav.container
-    [:ul [:li [:strong [:a {:href "/"} "HealthPatient"]]]]
-    [:ul [:li [:a {:href "/patients"} "All patients"]]]]
-   [:section.container
-    [:article
+   [common/container
+    [common/nav
+     [common/nav-section [common/nav-item [:strong [common/link "/" "HealthPatient"]]]]
+     [common/nav-section [common/nav-item [common/link "/patients" "All patients"]]]]]
+   [common/container
+    [common/card
      [flash-messages]
      content]]])
 
