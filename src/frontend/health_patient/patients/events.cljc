@@ -97,7 +97,9 @@
 (rf/reg-event-fx
   :upsert-patient-success
   (fn [_ [_ {:keys [id]}]]
-    {:set-url {:url (str "/patients/" id)}}))
+    {:set-url {:url (str "/patients/" id)}
+     :flash []
+     :form-errors []}))
 
 (rf/reg-event-db
   :upsert-patient-failure
@@ -110,6 +112,11 @@
   :edit-patient-field
   (fn [db [_ field value]]
     (assoc-in db [:patient field] value)))
+
+(rf/reg-event-db
+  :clear-patient-form
+  (fn [db _]
+    (assoc db :patient {})))
 
 (rf/reg-event-db
   :set-search-query

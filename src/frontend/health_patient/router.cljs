@@ -41,6 +41,7 @@
     {:db (assoc db :active-page page)
      :fx (case page
            :patients-list [[:dispatch [:get-patients]]]
+           :patient-create [[:dispatch [:clear-patient-form]]]
            (:patient-view :patient-edit) [[:dispatch [:get-patient (:id path-params)]]]
            [])}))
 
