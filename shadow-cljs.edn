@@ -1,15 +1,9 @@
-;; shadow-cljs configuration
-{:source-paths ["src/common" "src/frontend"]
- :dependencies [[reagent "1.1.1"]
-                [re-frame "1.2.0"]
-                [route-map "0.0.7"]
-                [kibu/pushy "0.3.8"]
-                [day8.re-frame/http-fx "0.2.4"]
-                [cljs-ajax "0.8.4"]
-                [funcool/struct "1.4.0"]
-                [funcool/cuerdas "2022.03.27-397"]
-                [cider/cider-nrepl "0.24.0"]]
+{:lein {:profile "+cljs"}
+ :dev-http {8000 "resources/public"}
+ :nrepl {:port 9000}
  :builds {:app {:target :browser
                 :output-dir "resources/public/js"
                 :asset-path "/js"
-                :modules {:main {:init-fn health-patient.app/init}}}}}
+                :modules {:app {:init-fn health-patient.app/init}}
+                :compiler-options {:optimizations :none}
+                :build-hooks [(stylo.shadow/reload "resources/public/css/app.css")]}}}

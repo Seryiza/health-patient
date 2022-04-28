@@ -14,7 +14,7 @@ start: migrate
 	lein repl
 
 frontend:
-	lein cljsbuild once
+	npx shadow-cljs release app
 
 dev-frontend:
 	npx shadow-cljs watch app
