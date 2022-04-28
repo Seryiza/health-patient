@@ -3,7 +3,7 @@
             [re-frame.core :as rf]
             [day8.re-frame.http-fx]
             [health-patient.router :as router]
-            [health-patient.events]
+            [health-patient.patients.events]
             [health-patient.subs]
             [health-patient.views.common :as common]))
 

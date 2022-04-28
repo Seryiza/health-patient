@@ -30,5 +30,19 @@
 (defn set-token! [url]
   (pushy/set-token! history url))
 
+(rf/reg-fx
+ :set-url
+ (fn [{:keys [url]}]
+   (set-token! url)))
+
+(rf/reg-event-fx
+  :set-active-page
+  (fn [{:keys [db]} [_ {:keys [page path-params]}]]
+    {:db (assoc db :active-page page)
+     :fx (case page
+           :patients-list [[:dispatch [:get-patients]]]
+           (:patient-view :patient-edit) [[:dispatch [:get-patient (:id path-params)]]]
+           [])}))
+
 (defn start! []
   (pushy/start! history))

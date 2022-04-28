@@ -1,26 +1,7 @@
-(ns health-patient.events
+(ns health-patient.patients.events
   (:require [re-frame.core :as rf]
             [ajax.core :as ajax]
-            [health-patient.db :as db]
-            [health-patient.router :as router]))
-
-(rf/reg-fx
- :set-url
- (fn [{:keys [url]}]
-   (router/set-token! url)))
-
-(rf/reg-event-db
-  :initialize-db
-  (fn [_ _] db/default-db))
-
-(rf/reg-event-fx
-  :set-active-page
-  (fn [{:keys [db]} [_ {:keys [page path-params]}]]
-    {:db (assoc db :active-page page)
-     :fx (case page
-           :patients-list [[:dispatch [:get-patients]]]
-           (:patient-view :patient-edit) [[:dispatch [:get-patient (:id path-params)]]]
-           [])}))
+            [health-patient.api :as api]))
 
 (rf/reg-event-fx
   :get-patients
@@ -29,7 +10,7 @@
              (assoc :flash [])
              (assoc-in [:loading :patients] true))
      :http-xhrio {:method :get
-                  :uri "/api/patients"
+                  :uri (api/endpoint "patients")
                   :params {:search-name (or search-query "")}
                   :format (ajax/json-request-format)
                   :response-format (ajax/json-response-format {:keywords? true})
@@ -55,7 +36,7 @@
   (fn [{:keys [db]} [_ patient-id]]
     {:db (assoc db :flash [])
      :http-xhrio {:method :delete
-                  :uri (str "/api/patients/" patient-id)
+                  :uri (api/endpoint "patients" patient-id)
                   :format (ajax/json-request-format)
                   :response-format (ajax/json-response-format {:keywords? true})
                   :on-success [:delete-patient-success patient-id]
@@ -78,7 +59,7 @@
              (assoc :flash [])
              (assoc-in [:loading :patient] true))
      :http-xhrio {:method :get
-                  :uri (str "/api/patients/" patient-id)
+                  :uri (api/endpoint "patients" patient-id)
                   :format (ajax/json-request-format)
                   :response-format (ajax/json-response-format {:keywords? true})
                   :on-success [:get-patient-success]
@@ -105,8 +86,8 @@
       {:db (assoc db :flash [])
        :http-xhrio {:method (if new? :post :put)
                     :uri    (if new?
-                              "/api/patients"
-                              (str "/api/patients/" id))
+                              (api/endpoint "patients")
+                              (api/endpoint "patients" id))
                     :params patient-data
                     :format (ajax/json-request-format)
                     :response-format (ajax/json-response-format {:keywords? true})
