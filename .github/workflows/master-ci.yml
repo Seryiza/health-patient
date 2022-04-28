@@ -12,5 +12,8 @@ jobs:
     steps:
     - uses: actions/checkout@v3
     
+    - name: Create .env file to run tests
+      run: cp .env.example .env
+    
     - name: Run CI from Makefile
       run: make docker-ci
