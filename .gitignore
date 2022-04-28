@@ -4,6 +4,7 @@
 # Builds
 /target
 /resources/public/js
+/resources/public/css
 
 # Dependencies
 /node_modules
