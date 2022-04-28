@@ -13,6 +13,14 @@
 (defn show-reactive-page [_]
   (html/response (views/reactive-page)))
 
+(defn wrap-cors [handler]
+  (fn [request]
+    (let [response (handler request)]
+      (-> response
+          (assoc-in [:headers "Access-Control-Allow-Origin"] "*")
+          (assoc-in [:headers "Access-Control-Allow-Methods"] "*")
+          (assoc-in [:headers "Access-Control-Allow-Headers"] "Accept, Content-Type")))))
+
 (def routes
   {:GET #'show-reactive-page
    "api" {"patients" {:GET #'patients/show-all-patients
@@ -35,4 +43,5 @@
         wrap-keyword-params
         wrap-json-params
         wrap-params
+        wrap-cors
         (wrap-resource "public"))))
