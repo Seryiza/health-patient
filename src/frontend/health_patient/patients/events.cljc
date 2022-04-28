@@ -1,6 +1,7 @@
 (ns health-patient.patients.events
   (:require [re-frame.core :as rf]
             [ajax.core :as ajax]
+            [health-patient.db :as db]
             [health-patient.api :as api]))
 
 (rf/reg-event-fx
@@ -82,7 +83,8 @@
 (rf/reg-event-fx
   :upsert-patient
   (fn [{:keys [db]} [_ {:keys [id] :as patient-data}]]
-    (let [new? (nil? id)]
+    (let [new? (nil? id)
+          patient-data (merge db/default-patient patient-data)]
       {:db (assoc db :flash [])
        :http-xhrio {:method (if new? :post :put)
                     :uri    (if new?
